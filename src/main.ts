@@ -2,7 +2,7 @@ import TelegramBot from 'node-telegram-bot-api';
 import { Links } from './links';
 import { Subscribers } from './subscribers';
 
-const token = '5800650856:AAH089RoUF77aS7vq1xf4lJ4vLpMdb9KSkw';
+const token = '';
 
 const bot = new TelegramBot(token, { polling: true });
 
