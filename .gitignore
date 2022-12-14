@@ -45,3 +45,5 @@ gen/
 secret
 
 tsconfig.tsbuildinfo
+
+.token
