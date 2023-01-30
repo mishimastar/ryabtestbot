@@ -1,12 +1,16 @@
 import TelegramBot from 'node-telegram-bot-api';
 import { once } from 'node:events';
 import { readFileSync } from 'node:fs';
-import { Flow } from './flow';
-import { Links } from './links';
 import { Subscribers } from './subscribers';
+import { Last } from './last';
+import { setTimeout as stopFlow } from 'node:timers/promises';
+import { BuildLinkRS, BuildLinkUP, GetRS, GetUP } from './test';
+import { BuildRUBTHB, BuildTHBRUB } from './strbuilder';
 
 const token = readFileSync('./.token', { encoding: 'utf-8' });
-Flow.init('./flow.json');
+export const LastData = new Last('./last.json');
+
+// const revert = (str: string) => str.split('').reverse().join('');
 
 const start = async () => {
     const bot = new TelegramBot(token, { polling: true });
@@ -18,82 +22,144 @@ const start = async () => {
         const chatId = msg.chat.id;
         if (match) {
             const resp = match[1]!; // the captured "whatever"
-            await bot.sendMessage(chatId, resp);
+            if (resp) await bot.sendMessage(chatId, resp);
         } else {
             await bot.sendMessage(chatId, 'error');
         }
     });
 
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    bot.onText(/^\/start/, async (msg) => {
+        console.log(msg.chat.id);
+        const chatId = msg.chat.id;
+
+        await bot.sendMessage(
+            chatId,
+            'Привет, отправь мне число и имя валюты, например:\n10000 бат\n300 bath\n 248 b\n 50 000 рублей\n12300 р\nруб 8000'
+        );
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    bot.onText(/(baht)|( b)|(бат)|( б)|(^b)|(^б)/, async (msg) => {
+        console.log(msg.chat.id, 'BAHT');
+        let str = '';
+        for (const symbol of msg.text!) if (/(\d)|(\.)/.test(symbol)) str += symbol;
+
+        const responce = BuildTHBRUB(str);
+        if (responce) {
+            await bot.sendMessage(msg.chat.id, responce, { reply_to_message_id: msg.message_id, parse_mode: 'MarkdownV2' });
+        } else {
+            await bot.sendMessage(msg.chat.id, 'пахнет батами, но ты что-то бредишь', {
+                reply_to_message_id: msg.message_id
+            });
+        }
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    bot.onText(/(rub)|(r)|(руб)|(р)/, async (msg) => {
+        console.log(msg.chat.id, 'RUB');
+        let str = '';
+        for (const symbol of msg.text!) if (/(\d)|(\.)/.test(symbol)) str += symbol;
+
+        const responce = BuildRUBTHB(str);
+        if (responce) {
+            await bot.sendMessage(msg.chat.id, responce, { reply_to_message_id: msg.message_id, parse_mode: 'MarkdownV2' });
+        } else {
+            await bot.sendMessage(msg.chat.id, 'пахнет рублями, но ты что-то бредишь', {
+                reply_to_message_id: msg.message_id
+            });
+        }
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     setTimeout(async () => {
-        for (const subscriber of Subscribers)
-            await bot.sendMessage(
-                subscriber,
-                `Bot is online at now!\nSubscribers: ${Subscribers.size}\n\n${new Date()
-                    .toLocaleString()
-                    .replaceAll('.', ' ')}`
-            );
+        try {
+            const d = new Date();
+            const rsb = await GetRS(BuildLinkRS(d));
+            // console.log('RSB', rsb);
+            if (!rsb) throw new Error('Cant fetch RSB');
+            const up = await GetUP(BuildLinkUP(d));
+            // console.log('UP', up);
+            if (!up) throw new Error('Cant fetch UP');
+
+            if (LastData.update({ date: up.date, baht2cny: up.rate, cny2rub: rsb.sell, rub2baht: up.rate * rsb.sell })) {
+                LastData.save();
+                for (const subscriber of Subscribers) {
+                    await bot.sendMessage(
+                        subscriber,
+                        `Bot is online at now\\!\nSubscribers: ${Subscribers.size}\n\nОбновление курса:\n\n1 **CNY** ➡️ **${
+                            rsb.sell
+                        }** **RUB**\n1 **THB** ➡️ **${up.rate}** **CNY**\n\n1 **THB** ➡️ **${
+                            rsb.sell * up.rate
+                        }** **RUB**\n\n${new Date().toLocaleString().replaceAll('.', ' ')}`.replaceAll('.', '\\.'),
+                        { parse_mode: 'MarkdownV2' }
+                    );
+                    await stopFlow(300);
+                }
+            } else {
+                await bot.sendMessage(
+                    857880458,
+                    `Bot is online at now!\nSubscribers: ${Subscribers.size}\n\n${new Date()
+                        .toLocaleString()
+                        .replaceAll('.', ' ')}`
+                );
+            }
+        } catch (error) {
+            console.error(error);
+        }
     }, 1000);
 
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     setInterval(async () => {
-        for (const [shopName, query] of Object.entries(Links)) {
-            let out = '';
-            for (const [lotName, link] of query.links) {
-                try {
-                    const resp = await query.get(link, 'scheduled');
-                    if (resp && resp[0]) out += `[${lotName}](${link})\n${resp[0]}\n\n`;
-                } catch (error) {
-                    out += `[${lotName}](${link})\nОШИБКА ЗАПРОСА, СМОТРИ ЛОГИ\n\n`;
-                }
-            }
-            if (out.length > 0) {
-                const message = `${shopName}\n\n${out}`;
-                for (const subscriber of Subscribers)
-                    await bot.sendMessage(subscriber, message, {
-                        parse_mode: 'MarkdownV2',
-                        disable_web_page_preview: true
-                    });
-            }
-        }
-        Flow.save();
-    }, 600000);
+        try {
+            const d = new Date();
+            const rsb = await GetRS(BuildLinkRS(d));
+            // console.log('RSB', rsb);
+            if (!rsb) throw new Error('Cant fetch RSB');
+            const up = await GetUP(BuildLinkUP(d));
+            // console.log('UP', up);
+            if (!up) throw new Error('Cant fetch UP');
 
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    bot.on('message', async (msg) => {
-        const chatId = msg.chat.id;
-        console.log(chatId);
-        // send a message to the chat acknowledging receipt of their message
-        await bot.sendMessage(chatId, 'Ответ по запросу:');
-        for (const [shopName, query] of Object.entries(Links)) {
-            let sendToAll = false;
-            let out = `${shopName}\n\n`;
-            for (const [lotName, link] of query.links) {
-                try {
-                    const resp = await query.get(link, 'manual');
-                    if (resp![1]) sendToAll = true;
-                    out += `[${lotName}](${link})\n${resp![0]!}\n\n`;
-                } catch (error) {
-                    out += `[${lotName}](${link})\nОШИБКА ЗАПРОСА, СМОТРИ ЛОГИ\n\n`;
-                }
-            }
-            if (sendToAll) {
+            if (LastData.update({ date: up.date, baht2cny: up.rate, cny2rub: rsb.sell, rub2baht: up.rate * rsb.sell })) {
+                LastData.save();
                 for (const subscriber of Subscribers) {
-                    console.log('Sent notification to ', subscriber);
-                    await bot.sendMessage(subscriber, out, { parse_mode: 'MarkdownV2', disable_web_page_preview: true });
+                    await bot.sendMessage(
+                        subscriber,
+                        `Обновление курса:\n\n1 **CNY** ➡️ **${rsb.sell}** **RUB**\n1 **THB** ➡️ **${
+                            up.rate
+                        }** **CNY**\n\n1 **THB** ➡️ **${(rsb.sell * up.rate).toFixed(6)}** **RUB**  \n\n${new Date()
+                            .toLocaleString()
+                            .replaceAll('.', ' ')}`.replaceAll('.', '\\.'),
+                        { parse_mode: 'MarkdownV2' }
+                    );
+                    await stopFlow(300);
                 }
             } else {
-                out += new Date().toLocaleString().replaceAll('.', ' ');
-                await bot.sendMessage(chatId, out, { parse_mode: 'MarkdownV2', disable_web_page_preview: true });
+                await bot.sendMessage(857880458, 'Запросы выполнены, изменений нет');
             }
+        } catch (error) {
+            console.error(error);
         }
-        Flow.save();
-    });
+    }, 60000);
+
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    // bot.on('message', async (msg) => {
+    //     const chatId = msg.chat.id;
+    //     console.log(chatId);
+    //     if (msg.text) await bot.sendMessage(chatId, revert(msg.text ?? ''));
+    // });
 
     await Promise.race([once(process, 'SIGINT'), once(process, 'SIGTERM')]);
 
     for (const subscriber of Subscribers)
-        await bot.sendMessage(subscriber, 'Bot is going offline at now', { parse_mode: 'MarkdownV2' });
+        await bot.sendMessage(
+            subscriber,
+            `Bot is going offline at now\n\nКурс *1 THB* \\= *${LastData.get().rub2baht.toFixed(6)} RUB*`.replaceAll(
+                '.',
+                '\\.'
+            ),
+            { parse_mode: 'MarkdownV2' }
+        );
 
     await bot.stopPolling();
 
@@ -102,6 +168,6 @@ const start = async () => {
 };
 
 start().catch((e) => {
-    console.error('ryabparsetestbot: fatal error', e);
+    console.error('ryabparsetestbot: fatal error', { error: JSON.stringify(e) });
     process.exit(1);
 });
