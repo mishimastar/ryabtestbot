@@ -7,7 +7,7 @@ import { setTimeout as stopFlow } from 'node:timers/promises';
 import { BuildLinkRS, BuildLinkUP, GetRS, GetUP } from './test';
 import { BuildRUBTHB, BuildTHBRUB } from './strbuilder';
 
-const token = readFileSync('./.token', { encoding: 'utf-8' });
+const token = readFileSync('./.token', { encoding: 'utf-8' }).trim();
 export const LastData = new Last('./last.json');
 
 // const revert = (str: string) => str.split('').reverse().join('');
@@ -140,7 +140,7 @@ const start = async () => {
         } catch (error) {
             console.error(error);
         }
-    }, 60000);
+    }, 1200000);
 
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     // bot.on('message', async (msg) => {

@@ -40,10 +40,11 @@ export const BuildRUBTHB = (inp: string): string | undefined => {
         LastData.get().rub2baht
     } RUB*\n${parsed.toFixed()} RUB ➡️ *${naked.toFixed(
         2
-    )} THB*\n\nКомиссия РСБ 2% \\(минимум 100 ₽\\) и 220 бат:\n*Курс 1 THB \\= ${(
-        parsed /
-        ((parsed + percent) / LastData.get().rub2baht - 220)
-    ).toFixed(6)} RUB*\n${parsed.toFixed(2)} \\+ ${percent.toFixed(2)} RUB ➡️ ***${(full - 220).toFixed(2)}*** THB`
+    )} THB*\n\nКомиссия РСБ 2% \\(минимум 100 ₽\\) и 220 бат:\n*Курс 1 THB \\= ${(parsed / (full - 220)).toFixed(
+        6
+    )} RUB*\n${parsed.toFixed(2)} \\+ ${percent.toFixed(2)} RUB ➡️ ***${(parsed / LastData.get().rub2baht - 220).toFixed(
+        2
+    )}*** THB`
         .replaceAll('.', '\\.')
         .replaceAll('-', '\\-');
 };
