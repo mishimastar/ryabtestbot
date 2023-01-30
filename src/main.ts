@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { Subscribers } from './subscribers';
 import { Last } from './last';
 import { setTimeout as stopFlow } from 'node:timers/promises';
-import { BuildLinkRS, BuildLinkUP, GetRS, GetUP } from './test';
+import { BuildLinkPB, BuildLinkRS, BuildLinkUP, GetPB, GetRS, GetUP } from './get';
 import { BuildRUBTHB, BuildTHBRUB } from './strbuilder';
 
 const token = readFileSync('./.token', { encoding: 'utf-8' }).trim();
@@ -78,20 +78,39 @@ const start = async () => {
             const rsb = await GetRS(BuildLinkRS(d));
             // console.log('RSB', rsb);
             if (!rsb) throw new Error('Cant fetch RSB');
+            const pb = await GetPB(BuildLinkPB(d));
+            // console.log('PB', pb);
+            if (!pb) throw new Error('Cant fetch PB');
+
             const up = await GetUP(BuildLinkUP(d));
             // console.log('UP', up);
             if (!up) throw new Error('Cant fetch UP');
 
-            if (LastData.update({ date: up.date, baht2cny: up.rate, cny2rub: rsb.sell, rub2baht: up.rate * rsb.sell })) {
+            if (
+                LastData.update({
+                    date: up.date,
+                    baht2cny: up.rate,
+                    cny2rub: rsb.sell,
+                    rub2baht: up.rate * rsb.sell,
+                    PBcny2rub: pb.sell
+                })
+            ) {
                 LastData.save();
                 for (const subscriber of Subscribers) {
                     await bot.sendMessage(
                         subscriber,
-                        `Bot is online at now\\!\nSubscribers: ${Subscribers.size}\n\nОбновление курса:\n\n1 **CNY** ➡️ **${
-                            rsb.sell
-                        }** **RUB**\n1 **THB** ➡️ **${up.rate}** **CNY**\n\n1 **THB** ➡️ **${
+                        `Bot is online at now\\!\nSubscribers: ${
+                            Subscribers.size
+                        }\n\nОбновление курса:\nUnionPay: 1 **THB** ➡️ **${
+                            up.rate
+                        }** **CNY*\n\n*РУССКИЙ СТАНДАРТ\n1 **CNY** ➡️ **${rsb.sell}** **RUB**\n1 **THB** ➡️ **${(
                             rsb.sell * up.rate
-                        }** **RUB**\n\n${new Date().toLocaleString().replaceAll('.', ' ')}`.replaceAll('.', '\\.'),
+                        ).toFixed(6)}** **RUB**\n\nПОЧТА БАНК\n1 **CNY** ➡️ **${pb.sell}** **RUB**\n1 **THB** ➡️ **${(
+                            pb.sell * up.rate
+                        ).toFixed(6)}** **RUB**\n\n${new Date().toLocaleString().replaceAll('.', ' ')}`.replaceAll(
+                            '.',
+                            '\\.'
+                        ),
                         { parse_mode: 'MarkdownV2' }
                     );
                     await stopFlow(300);
@@ -116,20 +135,37 @@ const start = async () => {
             const rsb = await GetRS(BuildLinkRS(d));
             // console.log('RSB', rsb);
             if (!rsb) throw new Error('Cant fetch RSB');
+            const pb = await GetPB(BuildLinkPB(d));
+            // console.log('PB', pb);
+            if (!pb) throw new Error('Cant fetch PB');
+
             const up = await GetUP(BuildLinkUP(d));
             // console.log('UP', up);
             if (!up) throw new Error('Cant fetch UP');
 
-            if (LastData.update({ date: up.date, baht2cny: up.rate, cny2rub: rsb.sell, rub2baht: up.rate * rsb.sell })) {
+            if (
+                LastData.update({
+                    date: up.date,
+                    baht2cny: up.rate,
+                    cny2rub: rsb.sell,
+                    rub2baht: up.rate * rsb.sell,
+                    PBcny2rub: pb.sell
+                })
+            ) {
                 LastData.save();
                 for (const subscriber of Subscribers) {
                     await bot.sendMessage(
                         subscriber,
-                        `Обновление курса:\n\n1 **CNY** ➡️ **${rsb.sell}** **RUB**\n1 **THB** ➡️ **${
+                        `Обновление курса:\nUnionPay: 1 **THB** ➡️ **${
                             up.rate
-                        }** **CNY**\n\n1 **THB** ➡️ **${(rsb.sell * up.rate).toFixed(6)}** **RUB**  \n\n${new Date()
-                            .toLocaleString()
-                            .replaceAll('.', ' ')}`.replaceAll('.', '\\.'),
+                        }** **CNY*\n\n*РУССКИЙ СТАНДАРТ\n1 **CNY** ➡️ **${rsb.sell}** **RUB**\n1 **THB** ➡️ **${(
+                            rsb.sell * up.rate
+                        ).toFixed(6)}** **RUB**\n\nПОЧТА БАНК\n1 **CNY** ➡️ **${pb.sell}** **RUB**\n1 **THB** ➡️ **${(
+                            pb.sell * up.rate
+                        ).toFixed(6)}** **RUB**\n\n${new Date().toLocaleString().replaceAll('.', ' ')}`.replaceAll(
+                            '.',
+                            '\\.'
+                        ),
                         { parse_mode: 'MarkdownV2' }
                     );
                     await stopFlow(300);

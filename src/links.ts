@@ -1,4 +1,4 @@
-import { GetPage28, GetPageKNS, GetPageRegard } from './get';
+// import { GetPage28, GetPageKNS, GetPageRegard } from './get';
 
 export const Links = {
     '28bit': {
@@ -11,8 +11,8 @@ export const Links = {
                 'Видеокарта GIGABYTE Radeon RX 6950 XT 16GB GAMING OC',
                 'https://28bit.ru/videokarta-gigabyte-gv-r695xtgaming-oc-16gd-radeon-rx-6950-xt-16gb-gaming-oc/'
             ]
-        ]),
-        get: GetPage28
+        ])
+        // get: GetPage28
     },
     'KNS': {
         links: new Map([
@@ -24,8 +24,8 @@ export const Links = {
                 'Видеокарта GigaByte AMD Radeon RX 6950 XT 16Gb',
                 'https://www.kns.ru/product/videokarta-gigabyte-amd-radeon-rx-6950-xt-16gb-gv-r695xtgaming-oc-16gd/'
             ]
-        ]),
-        get: GetPageKNS
+        ])
+        // get: GetPageKNS
     },
     'Regard': {
         links: new Map([
@@ -37,7 +37,7 @@ export const Links = {
                 'Видеокарта AMD Radeon RX 6950 XT Gigabyte 16Gb',
                 'https://www.regard.ru/product/418673/videokarta-amd-radeon-rx-6950-xt-gigabyte-16gb-gv-r695xtgaming-oc-16gd'
             ]
-        ]),
-        get: GetPageRegard
+        ])
+        // get: GetPageRegard
     }
 };

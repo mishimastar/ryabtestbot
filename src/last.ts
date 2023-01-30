@@ -5,6 +5,7 @@ export type RawLast = {
     cny2rub: number;
     baht2cny: number;
     rub2baht: number;
+    PBcny2rub: number;
 };
 
 export class Last {
@@ -12,7 +13,13 @@ export class Last {
 
     constructor(path: string) {
         const buf = JSON.parse(readFileSync(path, { encoding: 'utf-8' })) as RawLast;
-        this.#data = { date: new Date(buf.date), baht2cny: buf.baht2cny, cny2rub: buf.cny2rub, rub2baht: buf.rub2baht };
+        this.#data = {
+            date: new Date(buf.date),
+            baht2cny: buf.baht2cny,
+            cny2rub: buf.cny2rub,
+            rub2baht: buf.rub2baht,
+            PBcny2rub: buf.PBcny2rub
+        };
         console.log('Loaded last value: ', this.#data);
     }
 
@@ -33,7 +40,8 @@ export class Last {
             last.baht2cny === this.#data.baht2cny &&
             last.cny2rub === this.#data.cny2rub &&
             last.date.getTime() === this.#data.date.getTime() &&
-            last.rub2baht === this.#data.rub2baht
+            last.rub2baht === this.#data.rub2baht &&
+            last.PBcny2rub === this.#data.PBcny2rub
         ) {
             return false;
         } else {
@@ -41,7 +49,8 @@ export class Last {
                 baht2cny: last.baht2cny,
                 cny2rub: last.cny2rub,
                 date: last.date,
-                rub2baht: last.rub2baht
+                rub2baht: last.rub2baht,
+                PBcny2rub: last.PBcny2rub
             };
             return true;
         }
@@ -54,7 +63,8 @@ export class Last {
                 date: this.#data.date.toISOString().slice(0, 10),
                 cny2rub: this.#data.cny2rub,
                 baht2cny: this.#data.baht2cny,
-                rub2baht: this.#data.rub2baht
+                rub2baht: this.#data.rub2baht,
+                PBcny2rub: this.#data.PBcny2rub
             })
         );
     }
