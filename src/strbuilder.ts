@@ -12,15 +12,11 @@ const parseNum = (inp: string): number | undefined => {
 };
 
 export const RateUpdate = () => {
-    return `Обновление курса:\nUnionPay: 1 **THB** ➡️ **${
-        LastData.get().baht2cny
-    }** **CNY*\n\n*РУССКИЙ СТАНДАРТ\n1 **CNY** ➡️ **${
-        LastData.get().RScny2rub
-    }** **RUB**\n1 **THB** ➡️ \`${LastData.get().RSrub2baht.toFixed(6)}\` **RUB**\n\nПОЧТА БАНК\n1 **CNY** ➡️ \`${
-        LastData.get().PBcny2rub
-    }\` **RUB**\n1 **THB** ➡️ \`${(LastData.get().PBcny2rub * LastData.get().baht2cny).toFixed(6)}\` **RUB**\n\n${new Date()
-        .toLocaleString()
-        .replaceAll('.', ' ')}`.replaceAll('.', '\\.');
+    let out = `Обновление курса:\nUnionPay: 1 **THB** ➡️ **${LastData.get().baht2cny}** **CNY*\n\n`;
+    for (const [bank, aboutBank] of Banks) {
+        out += `*${bank}*\n1 **THB** ➡️ \`${LastData.get()[aboutBank.rateName].toFixed(6)}\` **RUB**\n\n`;
+    }
+    return `${out}\n\n${new Date().toLocaleString().replaceAll('.', ' ')}`.replaceAll('.', '\\.');
 };
 
 export const THB2RUBRate = (thb: number, rate: number, p: number, min: number) => {
@@ -40,7 +36,7 @@ const FairyTailRateTHB = (thb: number, rate: number) =>
 
 const RealRateRUB = (rub: number, rate: number, p: number, min: number) => {
     const percent = rub * p > min ? rub * p : min;
-    if (rub < percent) return `*С учетом комиссии снятие не возможно\\!\n*Минимальная комиссия банка* \`${min}\` *RUB*`;
+    if (rub < percent) return `*С учетом комиссии снятие не возможно\\!*\n*Минимальная комиссия банка* \`${min}\` *RUB*`;
     else if ((rub - percent) / rate > 220) {
         const full = (rub - percent) / rate;
         return `Комиссия *${p * 100}%* \\(минимум *${min} ₽*\\) и *220 бат*:\nКурс *1 THB* \\= \`${(
