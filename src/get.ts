@@ -154,7 +154,7 @@ export const GetPB = async (link: string) => {
                     for (const val of parsed.data) {
                         if (val.title === 'CNY') {
                             // console.log(val);
-                            r({ date: new Date(), sell: val.sale.value });
+                            r({ date: new Date(link.slice(48)), sell: val.sale.value });
                         }
                     }
                 });

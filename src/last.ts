@@ -63,7 +63,7 @@ export class Last {
         writeFileSync(
             './last.json',
             JSON.stringify({
-                date: this.#data.date.toISOString().slice(0, 10),
+                date: this.#data.date.toISOString(),
                 cny2rub: this.#data.cny2rub,
                 baht2cny: this.#data.baht2cny,
                 rub2baht: this.#data.rub2baht,
