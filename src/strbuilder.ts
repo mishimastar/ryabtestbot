@@ -96,3 +96,11 @@ export const BuildTHBRUB = (inp: string): string[] | undefined => {
     for (const bank of Banks.keys()) out.push(SingleBankTHB(bank, parsed));
     return out;
 };
+
+export const ByeByeRates = () => {
+    let out = '';
+    for (const [bank, aboutBank] of Banks) {
+        out += `${bank}\n1 THB \\=${LastData.get()[aboutBank.rateName]} **RUB**\n\n`;
+    }
+    return out.replaceAll('.', '\\.');
+};

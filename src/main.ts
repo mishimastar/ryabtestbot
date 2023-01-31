@@ -5,7 +5,7 @@ import { Subscribers } from './subscribers';
 import { Last } from './last';
 import { setTimeout as stopFlow } from 'node:timers/promises';
 import { BuildLinkPB, BuildLinkRS, BuildLinkUP, GetPB, GetRS, GetUP } from './get';
-import { BuildRUBTHB, BuildTHBRUB, RateUpdate } from './strbuilder';
+import { BuildRUBTHB, BuildTHBRUB, ByeByeRates, RateUpdate } from './strbuilder';
 
 const token = readFileSync('./.token', { encoding: 'utf-8' }).trim();
 export const LastData = new Last('./last.json');
@@ -49,7 +49,7 @@ const start = async () => {
         console.log(responces);
         if (responces) {
             for (const responce of responces)
-                await bot.sendMessage(msg.chat.id, responce, {
+                await bot.sendMessage(msg.chat.id, responce.replaceAll('.', '\\.'), {
                     reply_to_message_id: msg.message_id,
                     parse_mode: 'MarkdownV2'
                 });
@@ -169,14 +169,9 @@ const start = async () => {
 
     await Promise.race([once(process, 'SIGINT'), once(process, 'SIGTERM')]);
 
-    await bot.sendMessage(
-        857880458,
-        `Bot is going offline at now\n\nКурс *1 THB* \\= *${LastData.get().RSrub2baht.toFixed(6)} RUB*`.replaceAll(
-            '.',
-            '\\.'
-        ),
-        { parse_mode: 'MarkdownV2' }
-    );
+    await bot.sendMessage(857880458, `Bot is going offline at now\n\n${ByeByeRates()}`, {
+        parse_mode: 'MarkdownV2'
+    });
 
     // for (const subscriber of Subscribers)
     //     await bot.sendMessage(
