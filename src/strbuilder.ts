@@ -11,12 +11,20 @@ const parseNum = (inp: string): number | undefined => {
     }
 };
 
+export const AllRates = () => {
+    let out = `Все курсы:\nUnionPay: 1 **THB** ➡️ **${LastData.get().baht2cny}** **CNY**\n\n`;
+    for (const [bank, aboutBank] of Banks) {
+        out += `*${bank}*\n1 **THB** стоит \`${LastData.get()[aboutBank.rateName].toFixed(6)}\` **RUB**\n\n`;
+    }
+    return `${out}${new Date().toLocaleString().replaceAll('.', ' ')}`.replaceAll('.', '\\.');
+};
+
 export const RateUpdate = () => {
     let out = `Обновление курса:\nUnionPay: 1 **THB** ➡️ **${LastData.get().baht2cny}** **CNY**\n\n`;
     for (const [bank, aboutBank] of Banks) {
         out += `*${bank}*\n1 **THB** ➡️ \`${LastData.get()[aboutBank.rateName].toFixed(6)}\` **RUB**\n\n`;
     }
-    return `${out}\n\n${new Date().toLocaleString().replaceAll('.', ' ')}`.replaceAll('.', '\\.');
+    return `${out}${new Date().toLocaleString().replaceAll('.', ' ')}`.replaceAll('.', '\\.');
 };
 
 export const THB2RUBRate = (thb: number, rate: number, p: number, min: number) => {

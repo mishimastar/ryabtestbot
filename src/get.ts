@@ -220,3 +220,54 @@ export const GetGP = async () => {
         );
     });
 };
+
+export const GetRSHB = async () => {
+    const link = 'https://www.rshb.ru/natural/cards/rates/rates_online/';
+    return new Promise<{ date: Date; sell: number } | undefined>((r, reject) => {
+        get(
+            link,
+            {
+                headers: {
+                    'user-agent':
+                        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36'
+                }
+            },
+            function (res) {
+                console.log(new Date(), link, res.statusCode);
+                if (res.statusCode === 404) {
+                    r(undefined);
+                    return;
+                }
+                const data: Buffer[] = [];
+
+                res.on('data', (chunk: Buffer) => {
+                    data.push(chunk);
+                });
+                res.on('error', (err) => {
+                    console.error(err);
+                    reject(err);
+                });
+                res.on('end', () => {
+                    const pageRaw = Buffer.concat(data).toString();
+                    // console.log(pageRaw);
+
+                    const first = pageRaw.indexOf('CNY/RUR');
+                    if (first < 0) reject();
+                    const target = pageRaw
+                        .slice(first, first + 100)
+                        .replaceAll(' ', '')
+                        .replaceAll('\n', '')
+                        .slice(32, 39);
+                    // if (first >= 0) console.log(target);
+                    r({ sell: Number(target), date: new Date(0) });
+                });
+            }
+        );
+    });
+};
+
+// https://www.rshb.ru/natural/cards/rates/rates_online/?date_from=31.01.2023
+// https://www.rshb.ru/natural/cards/rates/rates_online/?date_from=31.01.2023&date_to=31.01.2023
+// CNY/RUR
+
+GetRSHB().catch((e) => console.error(e));
