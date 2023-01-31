@@ -47,3 +47,5 @@ secret
 tsconfig.tsbuildinfo
 
 .token
+
+last.json

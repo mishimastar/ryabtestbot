@@ -67,6 +67,7 @@ const start = async () => {
         for (const symbol of msg.text!) if (/(\d)|(\.)/.test(symbol)) str += symbol;
 
         const responces = BuildRUBTHB(str);
+        console.log(responces);
         if (responces) {
             for (const responce of responces)
                 await bot.sendMessage(msg.chat.id, responce, {
@@ -168,15 +169,24 @@ const start = async () => {
 
     await Promise.race([once(process, 'SIGINT'), once(process, 'SIGTERM')]);
 
-    for (const subscriber of Subscribers)
-        await bot.sendMessage(
-            subscriber,
-            `Bot is going offline at now\n\nКурс *1 THB* \\= *${LastData.get().RSrub2baht.toFixed(6)} RUB*`.replaceAll(
-                '.',
-                '\\.'
-            ),
-            { parse_mode: 'MarkdownV2' }
-        );
+    await bot.sendMessage(
+        857880458,
+        `Bot is going offline at now\n\nКурс *1 THB* \\= *${LastData.get().RSrub2baht.toFixed(6)} RUB*`.replaceAll(
+            '.',
+            '\\.'
+        ),
+        { parse_mode: 'MarkdownV2' }
+    );
+
+    // for (const subscriber of Subscribers)
+    //     await bot.sendMessage(
+    //         subscriber,
+    //         `Bot is going offline at now\n\nКурс *1 THB* \\= *${LastData.get().RSrub2baht.toFixed(6)} RUB*`.replaceAll(
+    //             '.',
+    //             '\\.'
+    //         ),
+    //         { parse_mode: 'MarkdownV2' }
+    //     );
 
     await bot.stopPolling();
 
