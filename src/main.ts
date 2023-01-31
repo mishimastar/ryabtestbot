@@ -125,6 +125,7 @@ const start = async () => {
             }
         } catch (error) {
             console.error(error);
+            await bot.sendMessage(857880458, String(error).replaceAll('.', ' '));
         }
     }, 1000);
 
@@ -175,8 +176,9 @@ const start = async () => {
             }
         } catch (error) {
             console.error(error);
+            await bot.sendMessage(857880458, String(error).replaceAll('.', ' '));
         }
-    }, 1200000);
+    }, 60000);
 
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     // bot.on('message', async (msg) => {
