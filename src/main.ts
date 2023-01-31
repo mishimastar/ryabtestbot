@@ -152,13 +152,13 @@ const start = async () => {
                     await stopFlow(300);
                 }
             } else {
-                await bot.sendMessage(857880458, 'Запросы выполнены, изменений нет');
+                await bot.sendMessage(857880458, 'Запросы выполнены, изменений нет', { disable_notification: true });
             }
         } catch (error) {
             console.error(error);
             await bot.sendMessage(857880458, 'ошибка');
         }
-    }, 60000);
+    }, 3600000);
 
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     // bot.on('message', async (msg) => {

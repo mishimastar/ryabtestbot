@@ -16,9 +16,9 @@ export const RateUpdate = () => {
         LastData.get().baht2cny
     }** **CNY*\n\n*РУССКИЙ СТАНДАРТ\n1 **CNY** ➡️ **${
         LastData.get().RScny2rub
-    }** **RUB**\n1 **THB** ➡️ **${LastData.get().RSrub2baht.toFixed(6)}** **RUB**\n\nПОЧТА БАНК\n1 **CNY** ➡️ **${
+    }** **RUB**\n1 **THB** ➡️ \`${LastData.get().RSrub2baht.toFixed(6)}\` **RUB**\n\nПОЧТА БАНК\n1 **CNY** ➡️ \`${
         LastData.get().PBcny2rub
-    }** **RUB**\n1 **THB** ➡️ **${(LastData.get().PBcny2rub * LastData.get().baht2cny).toFixed(6)}** **RUB**\n\n${new Date()
+    }\` **RUB**\n1 **THB** ➡️ \`${(LastData.get().PBcny2rub * LastData.get().baht2cny).toFixed(6)}\` **RUB**\n\n${new Date()
         .toLocaleString()
         .replaceAll('.', ' ')}`.replaceAll('.', '\\.');
 };
@@ -30,28 +30,30 @@ export const THB2RUBRate = (thb: number, rate: number, p: number, min: number) =
 };
 
 const FairyTailRateRUB = (rub: number, rate: number) =>
-    `Без учета комиссий:\nКурс *1 THB* \\= *${rate.toFixed(6)} RUB*\n${rub.toFixed(2)} RUB ➡️ *${(rub / rate).toFixed(
-        2
-    )} THB*`;
+    `Без учета комиссий:\nКурс *1 THB* \\= \`${rate.toFixed(6)}\` *RUB*\n${rub.toFixed(2)} *RUB* ➡️ \`${(
+        rub / rate
+    ).toFixed(2)}\` *THB*`;
 const FairyTailRateTHB = (thb: number, rate: number) =>
-    `Без учета комиссий:\nКурс *1 THB* \\= *${rate.toFixed(6)} RUB*\n${thb.toFixed(2)} THB ➡️ *${(thb * rate).toFixed(
-        2
-    )} RUB*`;
+    `Без учета комиссий:\nКурс *1 THB* \\= \`${rate.toFixed(6)}\` *RUB*\n${thb.toFixed(2)} *THB* ➡️ \`${(
+        thb * rate
+    ).toFixed(2)}\` *RUB*`;
 
 const RealRateRUB = (rub: number, rate: number, p: number, min: number) => {
     const percent = rub * p > min ? rub * p : min;
-    if (rub < percent) return `**С учетом комиссии снятие не возможно\\!\n**Минимальная комиссия банка ${min} RUB`;
+    if (rub < percent) return `*С учетом комиссии снятие не возможно\\!\n1*Минимальная комиссия банка *${min}* RUB`;
     else if ((rub - percent) / rate > 220) {
         const full = (rub - percent) / rate;
-        return `Комиссия ${p * 100}% \\(минимум ${min} ₽\\) и 220 бат:\n*Курс 1 THB \\= ${(rub / (full - 220)).toFixed(
-            6
-        )} RUB*\n${rub.toFixed(2)} __- ${percent.toFixed(2)}__ RUB ➡️ ***${((rub - percent) / rate - 220).toFixed(
-            2
-        )}*** THB`;
+        return `Комиссия *${p * 100}%* \\(минимум *${min} ₽*\\) и *220 бат*:\nКурс *1 THB* \\= \`${(
+            rub /
+            (full - 220)
+        ).toFixed(6)}\` *RUB*\n*${rub.toFixed(2)}* __- ${percent.toFixed(2)}__ *RUB* ➡️ \`${(
+            (rub - percent) / rate -
+            220
+        ).toFixed(2)}\` *THB*`;
     } else {
-        return `**С учетом комиссии снятие не возможно\\!**\nМинимальная сумма, чтобы снять 20 THB \\= **${
+        return `*С учетом комиссии снятие не возможно\\!*\nМинимальная сумма, чтобы снять 20 THB \\= \`${
             240 * rate + (240 * rate * p > min ? 240 * rate * p : min)
-        } RUB**`;
+        }\` *RUB*`;
     }
 };
 const RealRateTHB = (thb: number, rate: number, p: number, min: number) => {
@@ -59,9 +61,9 @@ const RealRateTHB = (thb: number, rate: number, p: number, min: number) => {
     const percent = fullbaht * rate * p > min ? fullbaht * rate * p : min;
     const full = fullbaht * rate + percent;
 
-    return `Комиссия ${p * 100}% \\(минимум ${min} ₽\\) и 220 бат:\n*Курс 1 THB \\= ${(full / thb).toFixed(
+    return `Комиссия *${p * 100}%* \\(минимум *${min} ₽*\\) и *220 бат*:\nКурс *1 THB* \\= \`${(full / thb).toFixed(
         6
-    )} RUB*\n${thb.toFixed(2)} __\\+  220__ THB ➡️ ***${full.toFixed(2)}*** RUB`;
+    )}\` *RUB*\n*${thb.toFixed(2)}* __\\+  220__ *THB* ➡️ \`${full.toFixed(2)}\` *RUB*`;
 };
 
 export const SingleBankRUB = (name: string, rub: number) => {
@@ -101,7 +103,7 @@ export const BuildTHBRUB = (inp: string): string[] | undefined => {
 export const ByeByeRates = () => {
     let out = '';
     for (const [bank, aboutBank] of Banks) {
-        out += `${bank}\n1 THB \\= ${LastData.get()[aboutBank.rateName].toFixed(6)} **RUB**\n\n`;
+        out += `*${bank}*\n*1 THB* \\= \`${LastData.get()[aboutBank.rateName].toFixed(6)}\` *RUB*\n\n`;
     }
     return out.replaceAll('.', '\\.');
 };
