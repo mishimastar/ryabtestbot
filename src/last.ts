@@ -8,6 +8,14 @@ export type RawLast = {
     PBcny2rub: number;
 };
 
+export type RawLastE = {
+    date: Date | undefined;
+    cny2rub: number | undefined;
+    baht2cny: number | undefined;
+    rub2baht: number | undefined;
+    PBcny2rub: number | undefined;
+};
+
 export class Last {
     #data: RawLast;
 
@@ -27,32 +35,22 @@ export class Last {
         return this.#data;
     }
 
-    update(last: RawLast): boolean {
-        // console.log(this.#data);
-        // console.log(last);
-        // console.log(
-        //     last.baht2cny === this.#data.baht2cny,
-        //     last.cny2rub === this.#data.cny2rub,
-        //     last.date.getTime() === this.#data.date.getTime(),
-        //     last.rub2baht === this.#data.rub2baht
-        // );
+    update(last: RawLastE): boolean {
         if (
-            last.baht2cny === this.#data.baht2cny &&
-            last.cny2rub === this.#data.cny2rub &&
-            last.date.getTime() === this.#data.date.getTime() &&
-            last.rub2baht === this.#data.rub2baht &&
-            last.PBcny2rub === this.#data.PBcny2rub
+            (last.baht2cny && last.baht2cny !== this.#data.baht2cny) ||
+            (last.cny2rub && last.cny2rub !== this.#data.cny2rub) ||
+            (last.date && last.date.getTime() !== this.#data.date.getTime()) ||
+            (last.rub2baht && last.rub2baht !== this.#data.rub2baht) ||
+            (last.PBcny2rub && last.PBcny2rub !== this.#data.PBcny2rub)
         ) {
-            return false;
-        } else {
-            this.#data = {
-                baht2cny: last.baht2cny,
-                cny2rub: last.cny2rub,
-                date: last.date,
-                rub2baht: last.rub2baht,
-                PBcny2rub: last.PBcny2rub
-            };
+            if (last.PBcny2rub) this.#data.PBcny2rub = last.PBcny2rub;
+            if (last.baht2cny) this.#data.baht2cny = last.baht2cny;
+            if (last.cny2rub) this.#data.cny2rub = last.cny2rub;
+            if (last.date) this.#data.date = last.date;
+            if (last.rub2baht) this.#data.rub2baht = last.rub2baht;
             return true;
+        } else {
+            return false;
         }
     }
 

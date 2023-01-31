@@ -5,7 +5,7 @@ import { Subscribers } from './subscribers';
 import { Last } from './last';
 import { setTimeout as stopFlow } from 'node:timers/promises';
 import { BuildLinkPB, BuildLinkRS, BuildLinkUP, GetPB, GetRS, GetUP } from './get';
-import { BuildRUBTHB, BuildTHBRUB } from './strbuilder';
+import { BuildRUBTHB, BuildTHBRUB, RateUpdate } from './strbuilder';
 
 const token = readFileSync('./.token', { encoding: 'utf-8' }).trim();
 export const LastData = new Last('./last.json');
@@ -76,41 +76,28 @@ const start = async () => {
         try {
             const d = new Date();
             const rsb = await GetRS(BuildLinkRS(d));
-            // console.log('RSB', rsb);
-            if (!rsb) throw new Error('Cant fetch RSB');
             const pb = await GetPB(BuildLinkPB(d));
-            // console.log('PB', pb);
-            if (!pb) throw new Error('Cant fetch PB');
-
             const up = await GetUP(BuildLinkUP(d));
-            // console.log('UP', up);
-            if (!up) throw new Error('Cant fetch UP');
+
+            let dateC: Date = LastData.get().date;
+            if (rsb?.date && rsb.date > dateC) dateC = rsb.date;
+            if (pb?.date && pb.date > dateC) dateC = pb.date;
+            if (up?.date && up.date > dateC) dateC = up.date;
 
             if (
                 LastData.update({
-                    date: up.date,
-                    baht2cny: up.rate,
-                    cny2rub: rsb.sell,
-                    rub2baht: up.rate * rsb.sell,
-                    PBcny2rub: pb.sell
+                    date: dateC,
+                    baht2cny: up?.rate,
+                    cny2rub: rsb?.sell,
+                    rub2baht: up && rsb ? up.rate * rsb.sell : undefined,
+                    PBcny2rub: pb?.sell
                 })
             ) {
                 LastData.save();
                 for (const subscriber of Subscribers) {
                     await bot.sendMessage(
                         subscriber,
-                        `Bot is online at now\\!\nSubscribers: ${
-                            Subscribers.size
-                        }\n\nОбновление курса:\nUnionPay: 1 **THB** ➡️ **${
-                            up.rate
-                        }** **CNY*\n\n*РУССКИЙ СТАНДАРТ\n1 **CNY** ➡️ **${rsb.sell}** **RUB**\n1 **THB** ➡️ **${(
-                            rsb.sell * up.rate
-                        ).toFixed(6)}** **RUB**\n\nПОЧТА БАНК\n1 **CNY** ➡️ **${pb.sell}** **RUB**\n1 **THB** ➡️ **${(
-                            pb.sell * up.rate
-                        ).toFixed(6)}** **RUB**\n\n${new Date().toLocaleString().replaceAll('.', ' ')}`.replaceAll(
-                            '.',
-                            '\\.'
-                        ),
+                        `Bot is online at now\\!\nSubscribers: ${Subscribers.size}\n\n${RateUpdate()}`,
                         { parse_mode: 'MarkdownV2' }
                     );
                     await stopFlow(300);
@@ -125,7 +112,7 @@ const start = async () => {
             }
         } catch (error) {
             console.error(error);
-            await bot.sendMessage(857880458, String(error).replaceAll('.', ' '));
+            await bot.sendMessage(857880458, 'Ошибка');
         }
     }, 1000);
 
@@ -134,41 +121,26 @@ const start = async () => {
         try {
             const d = new Date();
             const rsb = await GetRS(BuildLinkRS(d));
-            // console.log('RSB', rsb);
-            if (!rsb) throw new Error('Cant fetch RSB');
             const pb = await GetPB(BuildLinkPB(d));
-            // console.log('PB', pb);
-            if (!pb) throw new Error('Cant fetch PB');
-
             const up = await GetUP(BuildLinkUP(d));
-            // console.log('UP', up);
-            if (!up) throw new Error('Cant fetch UP');
+
+            let dateC: Date = LastData.get().date;
+            if (rsb?.date && rsb.date > dateC) dateC = rsb.date;
+            if (pb?.date && pb.date > dateC) dateC = pb.date;
+            if (up?.date && up.date > dateC) dateC = up.date;
 
             if (
                 LastData.update({
-                    date: up.date,
-                    baht2cny: up.rate,
-                    cny2rub: rsb.sell,
-                    rub2baht: up.rate * rsb.sell,
-                    PBcny2rub: pb.sell
+                    date: dateC,
+                    baht2cny: up?.rate,
+                    cny2rub: rsb?.sell,
+                    rub2baht: up && rsb ? up.rate * rsb.sell : undefined,
+                    PBcny2rub: pb?.sell
                 })
             ) {
                 LastData.save();
                 for (const subscriber of Subscribers) {
-                    await bot.sendMessage(
-                        subscriber,
-                        `Обновление курса:\nUnionPay: 1 **THB** ➡️ **${
-                            up.rate
-                        }** **CNY*\n\n*РУССКИЙ СТАНДАРТ\n1 **CNY** ➡️ **${rsb.sell}** **RUB**\n1 **THB** ➡️ **${(
-                            rsb.sell * up.rate
-                        ).toFixed(6)}** **RUB**\n\nПОЧТА БАНК\n1 **CNY** ➡️ **${pb.sell}** **RUB**\n1 **THB** ➡️ **${(
-                            pb.sell * up.rate
-                        ).toFixed(6)}** **RUB**\n\n${new Date().toLocaleString().replaceAll('.', ' ')}`.replaceAll(
-                            '.',
-                            '\\.'
-                        ),
-                        { parse_mode: 'MarkdownV2' }
-                    );
+                    await bot.sendMessage(subscriber, RateUpdate(), { parse_mode: 'MarkdownV2' });
                     await stopFlow(300);
                 }
             } else {
@@ -176,7 +148,7 @@ const start = async () => {
             }
         } catch (error) {
             console.error(error);
-            await bot.sendMessage(857880458, String(error).replaceAll('.', ' '));
+            await bot.sendMessage(857880458, 'ошибка');
         }
     }, 60000);
 

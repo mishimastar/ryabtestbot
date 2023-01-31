@@ -10,6 +10,18 @@ const parseNum = (inp: string): number | undefined => {
     }
 };
 
+export const RateUpdate = () => {
+    return `Обновление курса:\nUnionPay: 1 **THB** ➡️ **${
+        LastData.get().baht2cny
+    }** **CNY*\n\n*РУССКИЙ СТАНДАРТ\n1 **CNY** ➡️ **${
+        LastData.get().cny2rub
+    }** **RUB**\n1 **THB** ➡️ **${LastData.get().rub2baht.toFixed(6)}** **RUB**\n\nПОЧТА БАНК\n1 **CNY** ➡️ **${
+        LastData.get().PBcny2rub
+    }** **RUB**\n1 **THB** ➡️ **${(LastData.get().PBcny2rub * LastData.get().baht2cny).toFixed(6)}** **RUB**\n\n${new Date()
+        .toLocaleString()
+        .replaceAll('.', ' ')}`.replaceAll('.', '\\.');
+};
+
 export const thbX = (thb: number) => {
     const percent = (thb + 220) * LastData.get().rub2baht * 0.02 > 100 ? (thb + 220) * LastData.get().rub2baht * 0.02 : 100;
     const rub = (thb + 220) * LastData.get().rub2baht + percent;
