@@ -40,7 +40,7 @@ const FairyTailRateTHB = (thb: number, rate: number) =>
 
 const RealRateRUB = (rub: number, rate: number, p: number, min: number) => {
     const percent = rub * p > min ? rub * p : min;
-    if (rub < percent) return `*С учетом комиссии снятие не возможно\\!\n1*Минимальная комиссия банка *${min}* RUB`;
+    if (rub < percent) return `*С учетом комиссии снятие не возможно\\!\n*Минимальная комиссия банка* \`${min}\` *RUB*`;
     else if ((rub - percent) / rate > 220) {
         const full = (rub - percent) / rate;
         return `Комиссия *${p * 100}%* \\(минимум *${min} ₽*\\) и *220 бат*:\nКурс *1 THB* \\= \`${(
@@ -63,7 +63,7 @@ const RealRateTHB = (thb: number, rate: number, p: number, min: number) => {
 
     return `Комиссия *${p * 100}%* \\(минимум *${min} ₽*\\) и *220 бат*:\nКурс *1 THB* \\= \`${(full / thb).toFixed(
         6
-    )}\` *RUB*\n*${thb.toFixed(2)}* __\\+  220__ *THB* ➡️ \`${full.toFixed(2)}\` *RUB*`;
+    )}\` *RUB*\n*${thb.toFixed(2)}* __\\+ 220__ *THB* ➡️ \`${full.toFixed(2)}\` *RUB*`;
 };
 
 export const SingleBankRUB = (name: string, rub: number) => {
