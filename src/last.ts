@@ -54,7 +54,7 @@ export class Last {
             if (last.RScny2rub) this.#data.RScny2rub = last.RScny2rub;
             if (last.date) this.#data.date = last.date;
             this.#data.RSrub2baht = this.#data.RScny2rub * this.#data.baht2cny;
-            this.#data.PBrub2baht = this.#data.PBrub2baht * this.#data.baht2cny;
+            this.#data.PBrub2baht = this.#data.PBcny2rub * this.#data.baht2cny;
             return true;
         } else {
             console.log('-'.repeat(60));
