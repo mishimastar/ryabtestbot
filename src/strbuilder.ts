@@ -39,8 +39,8 @@ const FairyTailRateTHB = (thb: number, rate: number) =>
     )} RUB*`;
 
 const RealRateRUB = (rub: number, rate: number, p: number, min: number) => {
-    if (rub / rate > 220) {
-        const percent = rub * p > min ? rub * p : min;
+    const percent = rub * p > min ? rub * p : min;
+    if ((rub - percent) / rate > 220) {
         const full = (rub + percent) / rate;
         return `Комиссия ${p * 100}% \\(минимум ${min} ₽\\) и 220 бат:\n*Курс 1 THB \\= ${(
             (rub - percent) /
