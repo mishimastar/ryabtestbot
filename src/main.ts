@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { Subscribers } from './subscribers';
 import { Last } from './last';
 import { setTimeout as stopFlow } from 'node:timers/promises';
-import { BuildLinkPB, BuildLinkRS, BuildLinkUP, GetPB, GetRS, GetUP } from './get';
+import { BuildLinkPB, BuildLinkRS, BuildLinkUP, GetGP, GetPB, GetRS, GetUP } from './get';
 import { BuildRUBTHB, BuildTHBRUB, ByeByeRates, RateUpdate } from './strbuilder';
 
 const token = readFileSync('./.token', { encoding: 'utf-8' }).trim();
@@ -89,18 +89,21 @@ const start = async () => {
             const rsb = await GetRS(BuildLinkRS(d));
             const pb = await GetPB(BuildLinkPB(d));
             const up = await GetUP(BuildLinkUP(d));
+            const gp = await GetGP();
 
             let dateC: Date = LastData.get().date;
             if (rsb?.date && rsb.date > dateC) dateC = rsb.date;
             if (pb?.date && pb.date > dateC) dateC = pb.date;
             if (up?.date && up.date > dateC) dateC = up.date;
+            if (gp?.date && gp.date > dateC) dateC = gp.date;
 
             if (
                 LastData.update({
                     date: dateC,
                     baht2cny: up?.rate,
                     RScny2rub: rsb?.sell,
-                    PBcny2rub: pb?.sell
+                    PBcny2rub: pb?.sell,
+                    GPcny2rub: gp?.sell
                 })
             ) {
                 LastData.save();
@@ -133,18 +136,21 @@ const start = async () => {
             const rsb = await GetRS(BuildLinkRS(d));
             const pb = await GetPB(BuildLinkPB(d));
             const up = await GetUP(BuildLinkUP(d));
+            const gp = await GetGP();
 
             let dateC: Date = LastData.get().date;
             if (rsb?.date && rsb.date > dateC) dateC = rsb.date;
             if (pb?.date && pb.date > dateC) dateC = pb.date;
             if (up?.date && up.date > dateC) dateC = up.date;
+            if (gp?.date && gp.date > dateC) dateC = gp.date;
 
             if (
                 LastData.update({
                     date: dateC,
                     baht2cny: up?.rate,
                     RScny2rub: rsb?.sell,
-                    PBcny2rub: pb?.sell
+                    PBcny2rub: pb?.sell,
+                    GPcny2rub: gp?.sell
                 })
             ) {
                 LastData.save();
