@@ -214,6 +214,7 @@ export const GetGP = async () => {
                             }
                         }
                     }
+                    reject();
                 });
             }
         );
