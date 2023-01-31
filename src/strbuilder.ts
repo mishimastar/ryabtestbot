@@ -40,12 +40,13 @@ const FairyTailRateTHB = (thb: number, rate: number) =>
 
 const RealRateRUB = (rub: number, rate: number, p: number, min: number) => {
     const percent = rub * p > min ? rub * p : min;
-    if ((rub - percent) / rate > 220) {
+    if (rub < percent) return `**С учетом комиссии снятие не возможно\\!**Минимальная комиссия банка ${min} RUB`;
+    else if ((rub - percent) / rate > 220) {
         const full = (rub + percent) / rate;
         return `Комиссия ${p * 100}% \\(минимум ${min} ₽\\) и 220 бат:\n*Курс 1 THB \\= ${(
             (rub - percent) /
             (full - 220)
-        ).toFixed(6)} RUB*\n${rub.toFixed(2)} __\\- ${percent.toFixed(2)}__ RUB ➡️ ***${(rub / rate - 220).toFixed(
+        ).toFixed(6)} RUB*\n${rub.toFixed(2)} __- ${percent.toFixed(2)}__ RUB ➡️ ***${(rub / rate - 220).toFixed(
             2
         )}*** THB`;
     } else {
