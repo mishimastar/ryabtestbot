@@ -40,7 +40,7 @@ const start = async () => {
     });
 
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    bot.onText(/(baht)|( b)|(бат)|( б)|(^b)|(^б)/, async (msg) => {
+    bot.onText(/(baht)|( b)|(бат)|( б)|(^b)|(^б)|(thb)|(t)|(th)/, async (msg) => {
         console.log(msg.chat.id, 'BAHT');
         let str = '';
         for (const symbol of msg.text!) if (/(\d)|(\.)/.test(symbol)) str += symbol;

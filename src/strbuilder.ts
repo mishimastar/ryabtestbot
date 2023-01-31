@@ -30,11 +30,11 @@ export const THB2RUBRate = (thb: number, rate: number, p: number, min: number) =
 };
 
 const FairyTailRateRUB = (rub: number, rate: number) =>
-    `Без учета комиссий:\nКурс *1 THB* \\= *${rate.toFixed(2)} RUB*\n${rub.toFixed(2)} RUB ➡️ *${(rub / rate).toFixed(
+    `Без учета комиссий:\nКурс *1 THB* \\= *${rate.toFixed(6)} RUB*\n${rub.toFixed(2)} RUB ➡️ *${(rub / rate).toFixed(
         2
     )} THB*`;
 const FairyTailRateTHB = (thb: number, rate: number) =>
-    `Без учета комиссий:\nКурс *1 THB* \\= *${rate.toFixed(2)} RUB*\n${thb.toFixed(2)} THB ➡️ *${(thb * rate).toFixed(
+    `Без учета комиссий:\nКурс *1 THB* \\= *${rate.toFixed(6)} RUB*\n${thb.toFixed(2)} THB ➡️ *${(thb * rate).toFixed(
         2
     )} RUB*`;
 
@@ -42,9 +42,12 @@ const RealRateRUB = (rub: number, rate: number, p: number, min: number) => {
     if (rub / rate > 220) {
         const percent = rub * p > min ? rub * p : min;
         const full = (rub + percent) / rate;
-        return `Комиссия ${p * 100}% \\(минимум ${min} ₽\\) и 220 бат:\n*Курс 1 THB \\= ${(rub / (full - 220)).toFixed(
-            6
-        )} RUB*\n${rub.toFixed(2)} \\+ ${percent.toFixed(2)} RUB ➡️ ***${(rub / rate - 220).toFixed(2)}*** THB`;
+        return `Комиссия ${p * 100}% \\(минимум ${min} ₽\\) и 220 бат:\n*Курс 1 THB \\= ${(
+            (rub - percent) /
+            (full - 220)
+        ).toFixed(6)} RUB*\n${rub.toFixed(2)} __\\- ${percent.toFixed(2)}__ RUB ➡️ ***${(rub / rate - 220).toFixed(
+            2
+        )}*** THB`;
     } else {
         return `**С учетом комиссии снятие не возможно\\!**\nМинимальная сумма, чтобы снять 20 THB \\= **${
             240 * rate + (240 * rate * p > min ? 240 * rate * p : min)
@@ -58,7 +61,7 @@ const RealRateTHB = (thb: number, rate: number, p: number, min: number) => {
 
     return `Комиссия ${p * 100}% \\(минимум ${min} ₽\\) и 220 бат:\n*Курс 1 THB \\= ${(full / thb).toFixed(
         6
-    )} RUB*\n${thb.toFixed(2)} \\+  220 THB ➡️ ***${full.toFixed(2)}*** RUB`;
+    )} RUB*\n${thb.toFixed(2)} __\\+  220__ THB ➡️ ***${full.toFixed(2)}*** RUB`;
 };
 
 export const SingleBankRUB = (name: string, rub: number) => {
