@@ -63,6 +63,8 @@ export class Last {
             console.log(last.date && last.date.getTime() !== this.#data.date.getTime(), last.date, this.#data.date);
             console.log(last.PBcny2rub && last.PBcny2rub !== this.#data.PBcny2rub, last.PBcny2rub, this.#data.PBcny2rub);
             console.log('-'.repeat(60));
+            this.#data.RSrub2baht = this.#data.RScny2rub * this.#data.baht2cny;
+            this.#data.PBrub2baht = this.#data.PBcny2rub * this.#data.baht2cny;
             return false;
         }
     }
