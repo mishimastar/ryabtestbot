@@ -5,7 +5,7 @@ import { Subscribers } from './subscribers';
 import { Last } from './last';
 import { setTimeout as stopFlow } from 'node:timers/promises';
 import { BuildLinkPB, BuildLinkRS, BuildLinkUP, GetGP, GetPB, GetRS, GetRSHB, GetUP } from './get';
-import { BuildRUBTHB, BuildTHBRUB, ByeByeRates, RateUpdate } from './strbuilder';
+import { AllRates, BuildRUBTHB, BuildTHBRUB, ByeByeRates, RateUpdate } from './strbuilder';
 
 const token = readFileSync('./.token', { encoding: 'utf-8' }).trim();
 export const LastData = new Last('./last.json');
@@ -41,10 +41,10 @@ const start = async () => {
     });
 
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    bot.onText(/\/rates/, async (msg) => {
+    bot.onText(/^\/rates/, async (msg) => {
         console.log(msg.chat.id);
 
-        await bot.sendMessage(msg.chat.id, '', { parse_mode: 'MarkdownV2', reply_to_message_id: msg.message_id });
+        await bot.sendMessage(msg.chat.id, AllRates(), { parse_mode: 'MarkdownV2', reply_to_message_id: msg.message_id });
     });
 
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
