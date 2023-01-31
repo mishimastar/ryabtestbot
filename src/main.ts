@@ -41,7 +41,7 @@ const start = async () => {
     });
 
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    bot.onText(/(baht)|( b)|(бат)|( б)|(^b)|(^б)|(thb)|(t)|(th)/, async (msg) => {
+    bot.onText(/(baht)|( b)|(бат)|( б)|(^b)|(^б)|(thb)|( t)|( th)|(THB)|(B)|(T)|(Б)|(Т)/, async (msg) => {
         console.log(msg.chat.id, 'BAHT');
         let str = '';
         for (const symbol of msg.text!) if (/(\d)|(\.)/.test(symbol)) str += symbol;
@@ -62,7 +62,7 @@ const start = async () => {
     });
 
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    bot.onText(/(rub)|(r)|(руб)|(р)/, async (msg) => {
+    bot.onText(/(rub)|( r)|(руб)|(р)|(RUB)|(R)|(Р)/, async (msg) => {
         console.log(msg.chat.id, 'RUB');
         let str = '';
         for (const symbol of msg.text!) if (/(\d)|(\.)/.test(symbol)) str += symbol;
