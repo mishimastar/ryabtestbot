@@ -58,9 +58,7 @@ const RealRateTHB = (thb: number, rate: number, p: number, min: number) => {
 
     return `Комиссия ${p * 100}% \\(минимум ${min} ₽\\) и 220 бат:\n*Курс 1 THB \\= ${(full / thb).toFixed(
         6
-    )} RUB*\n${thb.toFixed(2)} \\+  220 THB ➡️ ***${full.toFixed(2)}*** RUB`
-        .replaceAll('.', '\\.')
-        .replaceAll('-', '\\-');
+    )} RUB*\n${thb.toFixed(2)} \\+  220 THB ➡️ ***${full.toFixed(2)}*** RUB`;
 };
 
 export const SingleBankRUB = (name: string, rub: number) => {
@@ -100,7 +98,7 @@ export const BuildTHBRUB = (inp: string): string[] | undefined => {
 export const ByeByeRates = () => {
     let out = '';
     for (const [bank, aboutBank] of Banks) {
-        out += `${bank}\n1 THB \\=${LastData.get()[aboutBank.rateName]} **RUB**\n\n`;
+        out += `${bank}\n1 THB \\= ${LastData.get()[aboutBank.rateName].toFixed(6)} **RUB**\n\n`;
     }
     return out.replaceAll('.', '\\.');
 };

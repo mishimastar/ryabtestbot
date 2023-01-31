@@ -49,7 +49,7 @@ const start = async () => {
         console.log(responces);
         if (responces) {
             for (const responce of responces)
-                await bot.sendMessage(msg.chat.id, responce.replaceAll('.', '\\.'), {
+                await bot.sendMessage(msg.chat.id, responce, {
                     reply_to_message_id: msg.message_id,
                     parse_mode: 'MarkdownV2'
                 });
