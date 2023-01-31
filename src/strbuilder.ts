@@ -42,8 +42,8 @@ const RealRateRUB = (rub: number, rate: number, p: number, min: number) => {
     const percent = rub * p > min ? rub * p : min;
     if (rub < percent) return `**С учетом комиссии снятие не возможно\\!\n**Минимальная комиссия банка ${min} RUB`;
     else if ((rub - percent) / rate > 220) {
-        const full = (rub + percent) / rate;
-        return `Комиссия ${p * 100}% \\(минимум ${min} ₽\\) и 220 бат:\n*Курс 1 THB \\= ${((rub - percent) / full).toFixed(
+        const full = (rub - percent) / rate;
+        return `Комиссия ${p * 100}% \\(минимум ${min} ₽\\) и 220 бат:\n*Курс 1 THB \\= ${(rub / (full - 220)).toFixed(
             6
         )} RUB*\n${rub.toFixed(2)} __- ${percent.toFixed(2)}__ RUB ➡️ ***${((rub - percent) / rate - 220).toFixed(
             2
