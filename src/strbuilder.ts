@@ -12,7 +12,7 @@ const parseNum = (inp: string): number | undefined => {
 };
 
 export const RateUpdate = () => {
-    let out = `Обновление курса:\nUnionPay: 1 **THB** ➡️ **${LastData.get().baht2cny}** **CNY*\n\n`;
+    let out = `Обновление курса:\nUnionPay: 1 **THB** ➡️ **${LastData.get().baht2cny}** **CNY**\n\n`;
     for (const [bank, aboutBank] of Banks) {
         out += `*${bank}*\n1 **THB** ➡️ \`${LastData.get()[aboutBank.rateName].toFixed(6)}\` **RUB**\n\n`;
     }
