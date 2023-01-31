@@ -45,9 +45,13 @@ const start = async () => {
         let str = '';
         for (const symbol of msg.text!) if (/(\d)|(\.)/.test(symbol)) str += symbol;
 
-        const responce = BuildTHBRUB(str);
-        if (responce) {
-            await bot.sendMessage(msg.chat.id, responce, { reply_to_message_id: msg.message_id, parse_mode: 'MarkdownV2' });
+        const responces = BuildTHBRUB(str);
+        if (responces) {
+            for (const responce of responces)
+                await bot.sendMessage(msg.chat.id, responce, {
+                    reply_to_message_id: msg.message_id,
+                    parse_mode: 'MarkdownV2'
+                });
         } else {
             await bot.sendMessage(msg.chat.id, 'пахнет батами, но ты что-то бредишь', {
                 reply_to_message_id: msg.message_id
@@ -61,9 +65,13 @@ const start = async () => {
         let str = '';
         for (const symbol of msg.text!) if (/(\d)|(\.)/.test(symbol)) str += symbol;
 
-        const responce = BuildRUBTHB(str);
-        if (responce) {
-            await bot.sendMessage(msg.chat.id, responce, { reply_to_message_id: msg.message_id, parse_mode: 'MarkdownV2' });
+        const responces = BuildRUBTHB(str);
+        if (responces) {
+            for (const responce of responces)
+                await bot.sendMessage(msg.chat.id, responce, {
+                    reply_to_message_id: msg.message_id,
+                    parse_mode: 'MarkdownV2'
+                });
         } else {
             await bot.sendMessage(msg.chat.id, 'пахнет рублями, но ты что-то бредишь', {
                 reply_to_message_id: msg.message_id
@@ -88,8 +96,7 @@ const start = async () => {
                 LastData.update({
                     date: dateC,
                     baht2cny: up?.rate,
-                    cny2rub: rsb?.sell,
-                    rub2baht: up && rsb ? up.rate * rsb.sell : undefined,
+                    RScny2rub: rsb?.sell,
                     PBcny2rub: pb?.sell
                 })
             ) {
@@ -133,8 +140,7 @@ const start = async () => {
                 LastData.update({
                     date: dateC,
                     baht2cny: up?.rate,
-                    cny2rub: rsb?.sell,
-                    rub2baht: up && rsb ? up.rate * rsb.sell : undefined,
+                    RScny2rub: rsb?.sell,
                     PBcny2rub: pb?.sell
                 })
             ) {
@@ -164,7 +170,7 @@ const start = async () => {
     for (const subscriber of Subscribers)
         await bot.sendMessage(
             subscriber,
-            `Bot is going offline at now\n\nКурс *1 THB* \\= *${LastData.get().rub2baht.toFixed(6)} RUB*`.replaceAll(
+            `Bot is going offline at now\n\nКурс *1 THB* \\= *${LastData.get().RSrub2baht.toFixed(6)} RUB*`.replaceAll(
                 '.',
                 '\\.'
             ),
