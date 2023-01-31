@@ -43,11 +43,13 @@ export class Last {
             (last.rub2baht && last.rub2baht !== this.#data.rub2baht) ||
             (last.PBcny2rub && last.PBcny2rub !== this.#data.PBcny2rub)
         ) {
+            console.log('='.repeat(60));
             console.log(last.baht2cny && last.baht2cny !== this.#data.baht2cny, last.baht2cny, this.#data.baht2cny);
             console.log(last.cny2rub && last.cny2rub !== this.#data.cny2rub, last.cny2rub, this.#data.cny2rub);
             console.log(last.date && last.date.getTime() !== this.#data.date.getTime(), last.date, this.#data.date);
             console.log(last.rub2baht && last.rub2baht !== this.#data.rub2baht, last.rub2baht, this.#data.rub2baht);
             console.log(last.PBcny2rub && last.PBcny2rub !== this.#data.PBcny2rub, last.PBcny2rub, this.#data.PBcny2rub);
+            console.log('='.repeat(60));
             if (last.PBcny2rub) this.#data.PBcny2rub = last.PBcny2rub;
             if (last.baht2cny) this.#data.baht2cny = last.baht2cny;
             if (last.cny2rub) this.#data.cny2rub = last.cny2rub;
@@ -55,6 +57,13 @@ export class Last {
             if (last.rub2baht) this.#data.rub2baht = last.rub2baht;
             return true;
         } else {
+            console.log('-'.repeat(60));
+            console.log(last.baht2cny && last.baht2cny !== this.#data.baht2cny, last.baht2cny, this.#data.baht2cny);
+            console.log(last.cny2rub && last.cny2rub !== this.#data.cny2rub, last.cny2rub, this.#data.cny2rub);
+            console.log(last.date && last.date.getTime() !== this.#data.date.getTime(), last.date, this.#data.date);
+            console.log(last.rub2baht && last.rub2baht !== this.#data.rub2baht, last.rub2baht, this.#data.rub2baht);
+            console.log(last.PBcny2rub && last.PBcny2rub !== this.#data.PBcny2rub, last.PBcny2rub, this.#data.PBcny2rub);
+            console.log('-'.repeat(60));
             return false;
         }
     }
