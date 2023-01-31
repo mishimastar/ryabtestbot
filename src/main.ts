@@ -169,19 +169,12 @@ const start = async () => {
 
     await Promise.race([once(process, 'SIGINT'), once(process, 'SIGTERM')]);
 
-    await bot.sendMessage(857880458, `Bot is going offline at now\n\n${ByeByeRates()}`, {
-        parse_mode: 'MarkdownV2'
-    });
+    // await bot.sendMessage(857880458, `Bot is going offline at now\n\n${ByeByeRates()}`, {
+    //     parse_mode: 'MarkdownV2'
+    // });
 
-    // for (const subscriber of Subscribers)
-    //     await bot.sendMessage(
-    //         subscriber,
-    //         `Bot is going offline at now\n\nКурс *1 THB* \\= *${LastData.get().RSrub2baht.toFixed(6)} RUB*`.replaceAll(
-    //             '.',
-    //             '\\.'
-    //         ),
-    //         { parse_mode: 'MarkdownV2' }
-    //     );
+    for (const subscriber of Subscribers)
+        await bot.sendMessage(subscriber, `Bot is going offline at now\n\n${ByeByeRates()}`, { parse_mode: 'MarkdownV2' });
 
     await bot.stopPolling();
 
