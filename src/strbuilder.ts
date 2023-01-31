@@ -66,6 +66,7 @@ const RealRateTHB = (thb: number, rate: number, p: number, min: number) => {
 export const SingleBankRUB = (name: string, rub: number) => {
     const aboutBank = Banks.get(name)!;
     const rate = LastData.get()[aboutBank.rateName];
+    console.log(aboutBank, rate);
     return `${name}\n\n${FairyTailRateRUB(rub, rate)}\n\n${RealRateRUB(rub, rate, aboutBank.percent, aboutBank.min)}`
         .replaceAll('.', '\\.')
         .replaceAll('-', '\\-');
@@ -74,6 +75,7 @@ export const SingleBankRUB = (name: string, rub: number) => {
 export const SingleBankTHB = (name: string, thb: number) => {
     const aboutBank = Banks.get(name)!;
     const rate = LastData.get()[aboutBank.rateName];
+    console.log(aboutBank, rate);
     return `${name}\n\n${FairyTailRateTHB(thb, rate)}\n\n${RealRateTHB(thb, rate, aboutBank.percent, aboutBank.min)}`
         .replaceAll('.', '\\.')
         .replaceAll('-', '\\-');

@@ -46,6 +46,7 @@ const start = async () => {
         for (const symbol of msg.text!) if (/(\d)|(\.)/.test(symbol)) str += symbol;
 
         const responces = BuildTHBRUB(str);
+        console.log(responces);
         if (responces) {
             for (const responce of responces)
                 await bot.sendMessage(msg.chat.id, responce, {
