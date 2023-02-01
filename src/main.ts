@@ -118,12 +118,17 @@ const start = async () => {
             ) {
                 LastData.save();
                 for (const subscriber of Subscribers) {
-                    await bot.sendMessage(
-                        subscriber,
-                        `Bot is online at now\\!\nSubscribers: ${Subscribers.size}\n\n${RateUpdate()}`,
-                        { parse_mode: 'MarkdownV2' }
-                    );
-                    await stopFlow(300);
+                    try {
+                        await bot.sendMessage(
+                            subscriber,
+                            `Bot is online at now\\!\nSubscribers: ${Subscribers.size}\n\n${RateUpdate()}`,
+                            { parse_mode: 'MarkdownV2' }
+                        );
+                        await stopFlow(300);
+                    } catch (error) {
+                        console.log(error);
+                        await bot.sendMessage(857880458, `Ошибка с ${subscriber}`);
+                    }
                 }
             } else {
                 await bot.sendMessage(
@@ -168,8 +173,13 @@ const start = async () => {
             ) {
                 LastData.save();
                 for (const subscriber of Subscribers) {
-                    await bot.sendMessage(subscriber, RateUpdate(), { parse_mode: 'MarkdownV2' });
-                    await stopFlow(300);
+                    try {
+                        await bot.sendMessage(subscriber, RateUpdate(), { parse_mode: 'MarkdownV2' });
+                        await stopFlow(300);
+                    } catch (error) {
+                        console.error(error);
+                        await bot.sendMessage(857880458, `ошибка c ${subscriber}`);
+                    }
                 }
             } else {
                 await bot.sendMessage(857880458, 'Запросы выполнены, изменений нет', { disable_notification: true });
@@ -193,8 +203,16 @@ const start = async () => {
     //     parse_mode: 'MarkdownV2'
     // });
 
-    for (const subscriber of Subscribers)
-        await bot.sendMessage(subscriber, `Bot is going offline at now\n\n${ByeByeRates()}`, { parse_mode: 'MarkdownV2' });
+    for (const subscriber of Subscribers) {
+        try {
+            await bot.sendMessage(subscriber, `Bot is going offline at now\n\n${ByeByeRates()}`, {
+                parse_mode: 'MarkdownV2'
+            });
+        } catch (error) {
+            console.error(error);
+            await bot.sendMessage(857880458, `Error while ${subscriber}`);
+        }
+    }
 
     await bot.stopPolling();
 
