@@ -1,7 +1,7 @@
 import TelegramBot from 'node-telegram-bot-api';
 import { once } from 'node:events';
 import { readFileSync } from 'node:fs';
-import { Subscribers } from './subscribers';
+import { Subscribers } from './subs';
 import { Last } from './last';
 import { setTimeout as stopFlow } from 'node:timers/promises';
 import { BuildLinkPB, BuildLinkRS, BuildLinkUP, GetGP, GetPB, GetRS, GetRSHB, GetUP } from './get';
@@ -32,12 +32,22 @@ const start = async () => {
     bot.onText(/^\/start/, async (msg) => {
         console.log(msg.chat.id);
         const chatId = msg.chat.id;
-
+        Subscribers.add(chatId);
         await bot.sendMessage(
             chatId,
-            'Привет, отправь мне количество и имя валюты, например:\n`10000 бат`\n`300 bath`\n`248 b`\n`50 000 рублей`\n`12300 р`\n`руб 8000`',
+            'Привет, тебе будут приходить уведомления об изменениях курса таиландского бата\\ю.\nОтправь мне количество и имя валюты, например:\n`10000 бат`\n`300 bath`\n`248 b`\n`50 000 рублей`\n`12300 р`\n`руб 8000`\n\nДля отписки отправь команду /stop',
             { parse_mode: 'MarkdownV2' }
         );
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    bot.onText(/^\/stop/, async (msg) => {
+        console.log(msg.chat.id);
+        const chatId = msg.chat.id;
+        Subscribers.delete(chatId);
+        await bot.sendMessage(chatId, 'Подписка отключена\nЧтобы подписаться вновь, отправь команду /start', {
+            parse_mode: 'MarkdownV2'
+        });
     });
 
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -149,11 +159,11 @@ const start = async () => {
                 })
             ) {
                 LastData.save();
-                for (const subscriber of Subscribers) {
+                for (const subscriber of Subscribers.get()) {
                     try {
                         await bot.sendMessage(
                             subscriber,
-                            `Bot is online at now\\!\nSubscribers: ${Subscribers.size}\n\n${RateUpdate()}`,
+                            `Bot is online at now\\!\nSubscribers: ${Subscribers.get().size}\n\n${RateUpdate()}`,
                             { parse_mode: 'MarkdownV2' }
                         );
                         await stopFlow(300);
@@ -165,13 +175,13 @@ const start = async () => {
             } else {
                 await bot.sendMessage(
                     857880458,
-                    `Bot is online at now!\nSubscribers: ${Subscribers.size}\n\n${new Date()
+                    `Bot is online at now!\nSubscribers: ${Subscribers.get().size}\n\n${new Date()
                         .toLocaleString()
                         .replaceAll('.', ' ')}`
                 );
             }
             const binance = await AllRatesCrypto(10000, 'RUB');
-            for (const subscriber of Subscribers) {
+            for (const subscriber of Subscribers.get()) {
                 try {
                     await bot.sendMessage(subscriber, binance, { parse_mode: 'MarkdownV2' });
                 } catch (error) {
@@ -213,7 +223,7 @@ const start = async () => {
                 })
             ) {
                 LastData.save();
-                for (const subscriber of Subscribers) {
+                for (const subscriber of Subscribers.get()) {
                     try {
                         await bot.sendMessage(subscriber, RateUpdate(), { parse_mode: 'MarkdownV2' });
                         await stopFlow(300);
@@ -244,7 +254,7 @@ const start = async () => {
     //     parse_mode: 'MarkdownV2'
     // });
 
-    for (const subscriber of Subscribers) {
+    for (const subscriber of Subscribers.get()) {
         try {
             await bot.sendMessage(subscriber, `Bot is going offline at now\n\n${ByeByeRates()}`, {
                 parse_mode: 'MarkdownV2'

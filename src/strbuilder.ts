@@ -28,11 +28,11 @@ export const AllRatesCrypto = async (mon: number | undefined, wal: 'RUB' | 'THB'
         if (rates) map.set(wallet, rates);
     }
     let out = `Все курсы P2P Binance:\nРасчетная сумма для курса \`${mon}\` ${wal}\n\n`;
-    for (const [wallet, { r2crypto }] of map) out += `*1 **${wallet}** стоит \`${r2crypto}\` **RUB**\n`;
+    for (const [wallet, { r2crypto }] of map) out += `**1 ${wallet}** стоит \`${r2crypto}\` **RUB**\n`;
     out += '\n';
-    for (const [wallet, { crypto2b }] of map) out += `*1 **THB** стоит \`${1 / crypto2b}\` **${wallet}**\n`;
+    for (const [wallet, { crypto2b }] of map) out += `**1 ${wallet}** стоит \`${crypto2b}\` **THB**\n`;
     out += '\n';
-    for (const [wallet, { rate }] of map) out += `**${wallet}**  1 **THB** ➡️ \`${rate.toFixed(4)}\` **RUB**\n`;
+    for (const [wallet, { rate }] of map) out += `**${wallet}**  **1 THB** ➡️ \`${rate.toFixed(4)}\` **RUB**\n`;
     out += '\n\n';
     for (const [wallet, { rate }] of map)
         out += `**${wallet}**  ${mon} **${wal}** ➡️ \`${
