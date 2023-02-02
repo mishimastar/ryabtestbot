@@ -22,7 +22,7 @@ export const AllRates = () => {
 
 export const AllRatesCrypto = async (mon: number | undefined, wal: 'RUB' | 'THB') => {
     if (mon === undefined) return '';
-    if (mon < 1000) return 'Минимальная сумма для запроса на Binance - 1000 RUB или 500 THB';
+    if (mon < 1000) return 'Минимальная сумма для запроса на Binance \\- 1000 RUB или 500 THB';
     const map = new Map<string, { r2crypto: number; crypto2b: number; rate: number }>();
     for (const wallet of Crypto) {
         const rates = await GetBIN(wallet, mon, wal);
