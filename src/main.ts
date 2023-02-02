@@ -5,7 +5,7 @@ import { Subscribers } from './subscribers';
 import { Last } from './last';
 import { setTimeout as stopFlow } from 'node:timers/promises';
 import { BuildLinkPB, BuildLinkRS, BuildLinkUP, GetGP, GetPB, GetRS, GetRSHB, GetUP } from './get';
-import { AllRates, BuildRUBTHB, BuildTHBRUB, ByeByeRates, RateUpdate } from './strbuilder';
+import { AllRates, AllRatesCrypto, BuildRUBTHB, BuildTHBRUB, ByeByeRates, ParseNum, RateUpdate } from './strbuilder';
 
 const token = readFileSync('./.token', { encoding: 'utf-8' }).trim();
 export const LastData = new Last('./last.json');
@@ -45,6 +45,10 @@ const start = async () => {
         console.log(msg.chat.id);
 
         await bot.sendMessage(msg.chat.id, AllRates(), { parse_mode: 'MarkdownV2', reply_to_message_id: msg.message_id });
+        await bot.sendMessage(msg.chat.id, await AllRatesCrypto(9000, 'RUB'), {
+            parse_mode: 'MarkdownV2',
+            reply_to_message_id: msg.message_id
+        });
     });
 
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -61,6 +65,10 @@ const start = async () => {
                     reply_to_message_id: msg.message_id,
                     parse_mode: 'MarkdownV2'
                 });
+            await bot.sendMessage(msg.chat.id, await AllRatesCrypto(ParseNum(str), 'THB'), {
+                parse_mode: 'MarkdownV2',
+                reply_to_message_id: msg.message_id
+            });
         } else {
             await bot.sendMessage(msg.chat.id, 'пахнет батами, но ты что-то бредишь', {
                 reply_to_message_id: msg.message_id
@@ -82,6 +90,10 @@ const start = async () => {
                     reply_to_message_id: msg.message_id,
                     parse_mode: 'MarkdownV2'
                 });
+            await bot.sendMessage(msg.chat.id, await AllRatesCrypto(ParseNum(str), 'RUB'), {
+                parse_mode: 'MarkdownV2',
+                reply_to_message_id: msg.message_id
+            });
         } else {
             await bot.sendMessage(msg.chat.id, 'пахнет рублями, но ты что-то бредишь', {
                 reply_to_message_id: msg.message_id
@@ -137,6 +149,14 @@ const start = async () => {
                         .toLocaleString()
                         .replaceAll('.', ' ')}`
                 );
+            }
+            for (const subscriber of Subscribers) {
+                try {
+                    await bot.sendMessage(subscriber, await AllRatesCrypto(9000, 'RUB'), { parse_mode: 'MarkdownV2' });
+                } catch (error) {
+                    console.log(error);
+                    await bot.sendMessage(857880458, `Ошибка с ${subscriber}`);
+                }
             }
         } catch (error) {
             console.error(error);

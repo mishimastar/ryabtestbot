@@ -7,3 +7,5 @@ export const Banks = new Map<
     ['ГАЗПРОМ БАНК', { min: 200, percent: 0.015, rateName: 'GPrub2baht' }],
     ['РОССЕЛЬХОЗ БАНК', { min: 199, percent: 0.01, rateName: 'RSHBrub2baht' }]
 ]);
+
+export const Crypto = new Set<string>(['USDT', 'BTC', 'BUSD', 'ETH', 'DOGE']);

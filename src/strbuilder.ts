@@ -1,7 +1,8 @@
-import { Banks } from './banks';
+import { Banks, Crypto } from './banks';
+import { GetBIN, Rounder } from './bin';
 import { LastData } from './main';
 
-const parseNum = (inp: string): number | undefined => {
+export const ParseNum = (inp: string): number | undefined => {
     try {
         const out = Number(inp);
         return out ? out : undefined;
@@ -16,6 +17,29 @@ export const AllRates = () => {
     for (const [bank, aboutBank] of Banks) {
         out += `*${bank}*\n1 **THB** стоит \`${LastData.get()[aboutBank.rateName].toFixed(6)}\` **RUB**\n\n`;
     }
+    return `${out}${new Date().toLocaleString().replaceAll('.', ' ')}`.replaceAll('.', '\\.');
+};
+
+export const AllRatesCrypto = async (mon: number | undefined, wal: 'RUB' | 'THB') => {
+    if (mon === undefined) return '';
+    const map = new Map<string, { r2crypto: number; crypto2b: number; rate: number }>();
+    for (const wallet of Crypto) {
+        const rates = await GetBIN(wallet, mon, wal);
+        if (rates) map.set(wallet, rates);
+    }
+    let out = `Все курсы P2P Binance:\nРасчетная сумма для курса\`${Rounder(mon)}\` ${wal}\n\n`;
+    for (const [wallet, { r2crypto }] of map) out += `*1 **${wallet}** стоит \`${r2crypto}\` **RUB**\n`;
+    out += '\n';
+    for (const [wallet, { crypto2b }] of map) out += `*1 **THB** стоит \`${(1 / crypto2b).toFixed(4)}\` **${wallet}**\n`;
+    out += '\n';
+    for (const [wallet, { rate }] of map) out += `**${wallet}**  1 **THB** ➡️ \`${rate.toFixed(4)}\` **RUB**\n`;
+    out += '\n\n';
+    for (const [wallet, { rate }] of map)
+        out += `**${wallet}**  ${mon} **${wal}** ➡️ \`${
+            wal === 'RUB' ? (mon / rate).toFixed(4) : (mon * rate).toFixed(4)
+        }\` **${wal === 'RUB' ? 'THB' : wal}**\n`;
+    out += '\n\n';
+    for (const wallet of Crypto) if (!map.has(wallet)) out += `Не получилось выполнить запрос для ${wallet}`;
     return `${out}${new Date().toLocaleString().replaceAll('.', ' ')}`.replaceAll('.', '\\.');
 };
 
@@ -89,7 +113,7 @@ export const SingleBankTHB = (name: string, thb: number) => {
 };
 
 export const BuildRUBTHB = (inp: string): string[] | undefined => {
-    const parsed = parseNum(inp);
+    const parsed = ParseNum(inp);
     if (!parsed) return undefined;
     const out: string[] = [];
     for (const bank of Banks.keys()) out.push(SingleBankRUB(bank, parsed));
@@ -97,7 +121,7 @@ export const BuildRUBTHB = (inp: string): string[] | undefined => {
 };
 
 export const BuildTHBRUB = (inp: string): string[] | undefined => {
-    const parsed = parseNum(inp);
+    const parsed = ParseNum(inp);
     if (!parsed) return undefined;
     const out: string[] = [];
     for (const bank of Banks.keys()) out.push(SingleBankTHB(bank, parsed));

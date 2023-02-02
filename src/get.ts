@@ -270,4 +270,4 @@ export const GetRSHB = async () => {
 // https://www.rshb.ru/natural/cards/rates/rates_online/?date_from=31.01.2023&date_to=31.01.2023
 // CNY/RUR
 
-GetRSHB().catch((e) => console.error(e));
+// GetRSHB().catch((e) => console.error(e));
