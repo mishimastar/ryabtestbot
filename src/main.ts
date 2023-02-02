@@ -45,9 +45,13 @@ const start = async () => {
         console.log(msg.chat.id);
 
         await bot.sendMessage(msg.chat.id, AllRates(), { parse_mode: 'MarkdownV2', reply_to_message_id: msg.message_id });
-        await bot.sendMessage(msg.chat.id, await AllRatesCrypto(9000, 'RUB'), {
-            parse_mode: 'MarkdownV2',
+        const toReplace = await bot.sendMessage(msg.chat.id, 'Делаю запрос на Binance\\.\\.\\.\nОжидание около 5 секунд', {
             reply_to_message_id: msg.message_id
+        });
+        await bot.editMessageText(await AllRatesCrypto(10000, 'RUB'), {
+            chat_id: msg.chat.id,
+            message_id: toReplace.message_id,
+            parse_mode: 'MarkdownV2'
         });
     });
 
@@ -65,9 +69,17 @@ const start = async () => {
                     reply_to_message_id: msg.message_id,
                     parse_mode: 'MarkdownV2'
                 });
-            await bot.sendMessage(msg.chat.id, await AllRatesCrypto(ParseNum(str), 'THB'), {
-                parse_mode: 'MarkdownV2',
-                reply_to_message_id: msg.message_id
+            const toReplace = await bot.sendMessage(
+                msg.chat.id,
+                'Делаю запрос на Binance\\.\\.\\.\nОжидание около 5 секунд',
+                {
+                    reply_to_message_id: msg.message_id
+                }
+            );
+            await bot.editMessageText(await AllRatesCrypto(ParseNum(str), 'THB'), {
+                chat_id: msg.chat.id,
+                message_id: toReplace.message_id,
+                parse_mode: 'MarkdownV2'
             });
         } else {
             await bot.sendMessage(msg.chat.id, 'пахнет батами, но ты что-то бредишь', {
@@ -90,9 +102,17 @@ const start = async () => {
                     reply_to_message_id: msg.message_id,
                     parse_mode: 'MarkdownV2'
                 });
-            await bot.sendMessage(msg.chat.id, await AllRatesCrypto(ParseNum(str), 'RUB'), {
-                parse_mode: 'MarkdownV2',
-                reply_to_message_id: msg.message_id
+            const toReplace = await bot.sendMessage(
+                msg.chat.id,
+                'Делаю запрос на Binance\\.\\.\\.\nОжидание около 5 секунд',
+                {
+                    reply_to_message_id: msg.message_id
+                }
+            );
+            await bot.editMessageText(await AllRatesCrypto(ParseNum(str), 'RUB'), {
+                chat_id: msg.chat.id,
+                message_id: toReplace.message_id,
+                parse_mode: 'MarkdownV2'
             });
         } else {
             await bot.sendMessage(msg.chat.id, 'пахнет рублями, но ты что-то бредишь', {
@@ -150,9 +170,10 @@ const start = async () => {
                         .replaceAll('.', ' ')}`
                 );
             }
+            const binance = await AllRatesCrypto(10000, 'RUB');
             for (const subscriber of Subscribers) {
                 try {
-                    await bot.sendMessage(subscriber, await AllRatesCrypto(9000, 'RUB'), { parse_mode: 'MarkdownV2' });
+                    await bot.sendMessage(subscriber, binance, { parse_mode: 'MarkdownV2' });
                 } catch (error) {
                     console.log(error);
                     await bot.sendMessage(857880458, `Ошибка с ${subscriber}`);
