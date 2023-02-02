@@ -38,7 +38,7 @@ export const AllRatesCrypto = async (mon: number | undefined, wal: 'RUB' | 'THB'
     for (const [wallet, { rate }] of map)
         out += `**${wallet}**  ${mon} **${wal}** ➡️ \`${
             wal === 'RUB' ? (mon / rate).toFixed(4) : (mon * rate).toFixed(4)
-        }\` **${wal === 'RUB' ? 'THB' : wal}**\n`;
+        }\` **${wal === 'RUB' ? 'THB' : 'RUB'}**\n`;
     out += '\n\n';
     for (const wallet of Crypto) if (!map.has(wallet)) out += `Не получилось выполнить запрос для ${wallet}\n`;
     return `${out}${new Date().toLocaleString().replaceAll('.', ' ')}`.replaceAll('.', '\\.');
