@@ -1,7 +1,7 @@
 import { request } from 'node:https';
 
-export const Rounder = (inp: number) =>
-    String((Math.round(inp / 10 ** (String(inp).length - 1)) + 1) * 10 ** (String(inp).length - 1));
+// export const Rounder = (inp: number) =>
+//     String((Math.round(inp / 10 ** (String(inp).length - 1)) + 1) * 10 ** (String(inp).length - 1));
 
 const dataBuilder = (crypto: string, rub: number): { rub2crypto: string; crypto2baht: string } => {
     if (rub < 1000) throw new Error('Min RUB is 1000');
@@ -18,7 +18,7 @@ const dataBuilder = (crypto: string, rub: number): { rub2crypto: string; crypto2
             tradeType: 'BUY',
             asset: crypto,
             merchantCheck: false,
-            transAmount: Rounder(rub)
+            transAmount: rub
         }),
         crypto2baht: JSON.stringify({
             proMerchantAds: false,
@@ -31,7 +31,7 @@ const dataBuilder = (crypto: string, rub: number): { rub2crypto: string; crypto2
             tradeType: 'SELL',
             asset: crypto,
             merchantCheck: false,
-            transAmount: Rounder(rub / 2)
+            transAmount: rub / 2
         })
     };
 };
