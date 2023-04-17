@@ -163,111 +163,111 @@ export const GetPB = async (link: string) => {
     });
 };
 
-export const GetGP = async () => {
-    const link = 'https://www.gazprombank.ru/rest/exchange/rate?cityId=617&version=3&ab_version=new';
-    return new Promise<{ date: Date; sell: number } | undefined>((r, reject) => {
-        get(
-            link,
-            {
-                headers: {
-                    'user-agent':
-                        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36'
-                }
-            },
-            function (res) {
-                console.log(new Date(), link, res.statusCode);
-                if (res.statusCode === 404) {
-                    r(undefined);
-                    return;
-                }
-                const data: Buffer[] = [];
+// export const GetGP = async () => {
+//     const link = 'https://www.gazprombank.ru/rest/exchange/rate?cityId=617&version=3&ab_version=new';
+//     return new Promise<{ date: Date; sell: number } | undefined>((r, reject) => {
+//         get(
+//             link,
+//             {
+//                 headers: {
+//                     'user-agent':
+//                         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36'
+//                 }
+//             },
+//             function (res) {
+//                 console.log(new Date(), link, res.statusCode);
+//                 if (res.statusCode === 404) {
+//                     r(undefined);
+//                     return;
+//                 }
+//                 const data: Buffer[] = [];
 
-                res.on('data', (chunk: Buffer) => {
-                    data.push(chunk);
-                });
-                res.on('error', (err) => {
-                    console.error(err);
-                    reject(err);
-                });
-                res.on('end', () => {
-                    const pageRaw = Buffer.concat(data).toString();
-                    // console.log(pageRaw);
-                    const parsed = JSON.parse(pageRaw);
-                    // console.log(parsed);
-                    if (!parsed || parsed.length === 0) reject();
+//                 res.on('data', (chunk: Buffer) => {
+//                     data.push(chunk);
+//                 });
+//                 res.on('error', (err) => {
+//                     console.error(err);
+//                     reject(err);
+//                 });
+//                 res.on('end', () => {
+//                     const pageRaw = Buffer.concat(data).toString();
+//                     // console.log(pageRaw);
+//                     const parsed = JSON.parse(pageRaw);
+//                     // console.log(parsed);
+//                     if (!parsed || parsed.length === 0) reject();
 
-                    for (const obj of parsed) {
-                        if (obj.code === 'exchange_rates_internet_bank') {
-                            for (const cont of obj.content) {
-                                if (!cont.items || cont.items.length === 0) reject();
-                                for (const item of cont.items)
-                                    if (item.ticker === 'CNY') {
-                                        console.log({
-                                            date: new Date(cont.updated.slice(-10).split('.').reverse().join('-')),
-                                            sell: Number(item.sell)
-                                        });
-                                        r({
-                                            date: new Date(cont.updated.slice(-10).split('.').reverse().join('-')),
-                                            sell: Number(item.sell)
-                                        });
-                                    }
-                            }
-                        }
-                    }
-                    reject();
-                });
-            }
-        );
-    });
-};
+//                     for (const obj of parsed) {
+//                         if (obj.code === 'exchange_rates_internet_bank') {
+//                             for (const cont of obj.content) {
+//                                 if (!cont.items || cont.items.length === 0) reject();
+//                                 for (const item of cont.items)
+//                                     if (item.ticker === 'CNY') {
+//                                         console.log({
+//                                             date: new Date(cont.updated.slice(-10).split('.').reverse().join('-')),
+//                                             sell: Number(item.sell)
+//                                         });
+//                                         r({
+//                                             date: new Date(cont.updated.slice(-10).split('.').reverse().join('-')),
+//                                             sell: Number(item.sell)
+//                                         });
+//                                     }
+//                             }
+//                         }
+//                     }
+//                     reject();
+//                 });
+//             }
+//         );
+//     });
+// };
 
-export const GetRSHB = async () => {
-    const link = 'https://www.rshb.ru/natural/cards/rates/rates_online/';
-    return new Promise<{ date: Date; sell: number } | undefined>((r, reject) => {
-        get(
-            link,
-            {
-                headers: {
-                    'user-agent':
-                        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36'
-                }
-            },
-            function (res) {
-                console.log(new Date(), link, res.statusCode);
-                if (res.statusCode === 404) {
-                    r(undefined);
-                    return;
-                }
-                const data: Buffer[] = [];
+// export const GetRSHB = async () => {
+//     const link = 'https://www.rshb.ru/natural/cards/rates/rates_online/';
+//     return new Promise<{ date: Date; sell: number } | undefined>((r, reject) => {
+//         get(
+//             link,
+//             {
+//                 headers: {
+//                     'user-agent':
+//                         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36'
+//                 }
+//             },
+//             function (res) {
+//                 console.log(new Date(), link, res.statusCode);
+//                 if (res.statusCode === 404) {
+//                     r(undefined);
+//                     return;
+//                 }
+//                 const data: Buffer[] = [];
 
-                res.on('data', (chunk: Buffer) => {
-                    data.push(chunk);
-                });
-                res.on('error', (err) => {
-                    console.error(err);
-                    reject(err);
-                });
-                res.on('end', () => {
-                    const pageRaw = Buffer.concat(data).toString();
-                    // console.log(pageRaw);
+//                 res.on('data', (chunk: Buffer) => {
+//                     data.push(chunk);
+//                 });
+//                 res.on('error', (err) => {
+//                     console.error(err);
+//                     reject(err);
+//                 });
+//                 res.on('end', () => {
+//                     const pageRaw = Buffer.concat(data).toString();
+//                     // console.log(pageRaw);
 
-                    const first = pageRaw.indexOf('CNY/RUR');
-                    if (first < 0) reject();
-                    const target = pageRaw
-                        .slice(first, first + 100)
-                        .replaceAll(' ', '')
-                        .replaceAll('\n', '')
-                        .slice(32, 39);
-                    // if (first >= 0) console.log(target);
-                    r({ sell: Number(target), date: new Date(0) });
-                });
-            }
-        );
-    });
-};
+//                     const first = pageRaw.indexOf('CNY/RUR');
+//                     if (first < 0) reject();
+//                     const target = pageRaw
+//                         .slice(first, first + 100)
+//                         .replaceAll(' ', '')
+//                         .replaceAll('\n', '')
+//                         .slice(32, 39);
+//                     // if (first >= 0) console.log(target);
+//                     r({ sell: Number(target), date: new Date(0) });
+//                 });
+//             }
+//         );
+//     });
+// };
 
-// https://www.rshb.ru/natural/cards/rates/rates_online/?date_from=31.01.2023
-// https://www.rshb.ru/natural/cards/rates/rates_online/?date_from=31.01.2023&date_to=31.01.2023
-// CNY/RUR
+// // https://www.rshb.ru/natural/cards/rates/rates_online/?date_from=31.01.2023
+// // https://www.rshb.ru/natural/cards/rates/rates_online/?date_from=31.01.2023&date_to=31.01.2023
+// // CNY/RUR
 
-// GetRSHB().catch((e) => console.error(e));
+// // GetRSHB().catch((e) => console.error(e));
