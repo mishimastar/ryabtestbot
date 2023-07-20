@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { Subscribers } from './subs';
 import { Last } from './last';
 import { setTimeout as stopFlow } from 'node:timers/promises';
-import { BuildLinkPB, BuildLinkRS, BuildLinkUP, GetPB, GetRS, GetUP } from './get';
+import { BuildLinkRS, BuildLinkUP, GetRS, GetUP } from './get';
 import { AllRates, AllRatesCrypto, BuildRUBTHB, BuildTHBRUB, ByeByeRates, ParseNum, RateUpdate } from './strbuilder';
 
 const token = readFileSync('./.token', { encoding: 'utf-8' }).trim();
