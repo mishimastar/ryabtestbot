@@ -128,13 +128,13 @@ const start = async () => {
         try {
             const d = new Date();
             const rsb = await GetRS(BuildLinkRS(d));
-            const pb = await GetPB(BuildLinkPB(d));
+            // const pb = await GetPB(BuildLinkPB(d));
             const up = await GetUP(BuildLinkUP(d));
 
             let dateC: Date = LastData.get().date;
             if (rsb?.date && rsb.date > dateC) dateC = rsb.date;
-            if (pb?.date && pb.date > dateC) dateC = pb.date;
-            if (up?.date && up.date > dateC) dateC = up.date;
+            // if (pb?.date && pb.date > dateC) dateC = pb.date;
+            // if (up?.date && up.date > dateC) dateC = up.date;
             // if (gp?.date && gp.date > dateC) dateC = gp.date;
             // if (rshb?.date && rshb.date > dateC) dateC = rshb.date;
 
@@ -142,8 +142,8 @@ const start = async () => {
                 LastData.update({
                     date: dateC,
                     baht2cny: up?.rate,
-                    RScny2rub: rsb?.sell,
-                    PBcny2rub: pb?.sell
+                    RScny2rub: rsb?.sell
+                    // PBcny2rub: pb?.sell
                     // GPcny2rub: gp?.sell,
                     // RSHBcny2rub: rshb?.sell
                 })
@@ -191,14 +191,14 @@ const start = async () => {
         try {
             const d = new Date();
             const rsb = await GetRS(BuildLinkRS(d));
-            const pb = await GetPB(BuildLinkPB(d));
+            // const pb = await GetPB(BuildLinkPB(d));
             const up = await GetUP(BuildLinkUP(d));
             // const gp = await GetGP();
             // const rshb = await GetRSHB();
 
             let dateC: Date = LastData.get().date;
             if (rsb?.date && rsb.date > dateC) dateC = rsb.date;
-            if (pb?.date && pb.date > dateC) dateC = pb.date;
+            // if (pb?.date && pb.date > dateC) dateC = pb.date;
             if (up?.date && up.date > dateC) dateC = up.date;
             // if (gp?.date && gp.date > dateC) dateC = gp.date;
             // if (rshb?.date && rshb.date > dateC) dateC = rshb.date;
@@ -207,8 +207,8 @@ const start = async () => {
                 LastData.update({
                     date: dateC,
                     baht2cny: up?.rate,
-                    RScny2rub: rsb?.sell,
-                    PBcny2rub: pb?.sell
+                    RScny2rub: rsb?.sell
+                    // PBcny2rub: pb?.sell
                     // GPcny2rub: gp?.sell,
                     // RSHBcny2rub: rshb?.sell
                 })
