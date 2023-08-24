@@ -17,7 +17,14 @@ const processGet = (req: IncomingMessage): [data: string, status: number, conten
     const url = new URL(req.url!, `http://${req.headers.host}`);
     switch (url.pathname) {
         case '/rs':
-            return [LastData.get().RSrub2baht.toFixed(3), 200, mime.txt];
+            return [
+                JSON.stringify({
+                    k: LastData.get().RSrub2baht.toFixed(3),
+                    d: new Date(new Date().getTime() + 25200000).toISOString().slice(5, 16).replace('T', ' ')
+                }),
+                200,
+                mime.txt
+            ];
 
         default:
             return ['not found', 404, mime.txt];
