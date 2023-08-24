@@ -6,6 +6,7 @@ import { Last } from './last';
 import { setTimeout as stopFlow } from 'node:timers/promises';
 import { BuildLinkRS, BuildLinkUP, GetRS, GetUP } from './get';
 import { AllRates, AllRatesCrypto, BuildRUBTHB, BuildTHBRUB, ByeByeRates, ParseNum, RateUpdate } from './strbuilder';
+import { StartAPI, StopAPI } from './rest';
 
 const token = readFileSync('./.token', { encoding: 'utf-8' }).trim();
 export const LastData = new Last('./last.json');
@@ -238,8 +239,9 @@ const start = async () => {
     //     console.log(chatId);
     //     if (msg.text) await bot.sendMessage(chatId, revert(msg.text ?? ''));
     // });
-
+    await StartAPI();
     await Promise.race([once(process, 'SIGINT'), once(process, 'SIGTERM')]);
+    await StopAPI();
 
     // await bot.sendMessage(857880458, `Bot is going offline at now\n\n${ByeByeRates()}`, {
     //     parse_mode: 'MarkdownV2'
